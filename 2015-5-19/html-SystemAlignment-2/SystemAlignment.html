@@ -1,0 +1,490 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>SystemAlignment</title><meta name="generator" content="MATLAB 8.4"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2015-05-16"><meta name="DC.source" content="SystemAlignment.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">Full System Pipeline</a></li><li><a href="#3">Setup</a></li><li><a href="#5">Load N Images</a></li><li><a href="#6">Get Correspondences</a></li><li><a href="#7">Spring-Mass Engine</a></li><li><a href="#8">Save Results</a></li><li><a href="#10">Visualize Correspondences</a></li><li><a href="#11">Analyze Correspondences (delete this)</a></li><li><a href="#12">Visualize Registered Images with Correspondences</a></li><li><a href="#13">Show images with matching patches, &amp; analyze the integrity of each patch</a></li><li><a href="#14">Create a movie from the new patches</a></li></ul></div><pre class="codeinput"><span class="comment">%</span>
+</pre><h2>Full System Pipeline<a name="2"></a></h2><p>1. Load N Images &amp; Choose 1 Target 2. Obtain correspondences between sources and target 3. Spring-mass registration of each pair 4. Select ROI (possibly manually) 5. Display image ROIs across time</p><pre class="codeinput">clc
+close <span class="string">all</span>
+clear <span class="string">all</span>
+</pre><h2>Setup<a name="3"></a></h2><pre class="codeinput"><span class="comment">% Useful Inline Functions</span>
+
+cellfunc = @(f, c) cellfun(f, c, <span class="string">'UniformOutput'</span>, false);
+cellfunc2 = @(f, c1, c2) cellfun(f, c1, c2, <span class="string">'UniformOutput'</span>, false);
+SA_imresize = @(x) imresize(x, 0.5);
+SA_imrotate = @(x) imrotate(x, 90);
+makeFullScreen = @(f) f.set(<span class="string">'units'</span>, <span class="string">'normalized'</span>, <span class="string">'outerposition'</span>, [0 0 1 1]);
+makeQuarterScreen = @(f) f.set(<span class="string">'units'</span>, <span class="string">'normalized'</span>, <span class="string">'outerposition'</span>, [0 0 0.5 0.5]);
+makeHalfScreen = @(f) f.set(<span class="string">'units'</span>, <span class="string">'normalized'</span>, <span class="string">'outerposition'</span>, [0 0 1 0.5]);
+
+
+<span class="comment">% Images used</span>
+
+imgs = {
+    <span class="string">'/media/esteva/ExtraDrive1/ThrunResearch/NikonD3Data/3-27-2015/4pm/DSC_7771.JPG'</span>
+    <span class="string">'/media/esteva/ExtraDrive1/ThrunResearch/NikonD3Data/3-27-2015/8pm/DSC_7777.JPG'</span>
+    <span class="string">'/media/esteva/ExtraDrive1/ThrunResearch/NikonD3Data/3-28-2015/9am/DSC_7781.JPG'</span>
+    <span class="string">'/media/esteva/ExtraDrive1/ThrunResearch/NikonD3Data/3-29-2015/DSC_7813.JPG'</span>
+    <span class="string">'/media/esteva/ExtraDrive1/ThrunResearch/NikonD3Data/3-30-2015/DSC_7821.JPG'</span>
+    <span class="string">'/media/esteva/ExtraDrive1/ThrunResearch/NikonD3Data/4-1-2015/DSC_7903.JPG'</span> <span class="comment">% not all of me is in images</span>
+    <span class="string">'/media/esteva/ExtraDrive1/ThrunResearch/NikonD3Data/4-6-2015/DSC_7952.JPG'</span>
+    <span class="string">'/media/esteva/ExtraDrive1/ThrunResearch/NikonD3Data/4-7-2015/DSC_7964.JPG'</span>
+
+    <span class="comment">% Set target to one of these two</span>
+    <span class="string">'/media/esteva/ExtraDrive1/ThrunResearch/NikonD3Data/4-9-2015/DSC_7984.JPG'</span>
+<span class="comment">%     % '/media/esteva/ExtraDrive1/ThrunResearch/NikonD3Data/4-11-2015/DSC_7989.JPG'</span>
+};
+img_target = <span class="string">'/media/esteva/ExtraDrive1/ThrunResearch/NikonD3Data/4-11-2015/DSC_7989.JPG'</span>;
+
+
+<span class="comment">% Add to Path functions that are needed</span>
+
+addpath(genpath(<span class="string">'vlfeat'</span>)) <span class="comment">% handles dense sift</span>
+addpath(genpath(<span class="string">'functions'</span>)) <span class="comment">% small library of my own</span>
+
+<span class="comment">% Save into this folder</span>
+savedir = <span class="string">'SystemAlignmentData'</span>;
+
+<span class="comment">% Saved Data</span>
+<span class="comment">%   data1 contains results from dense sift, removing small matches</span>
+<span class="comment">%   data2 contains results from dense sift, removing small matches and anything bigger than mean(n)+3*std(n),</span>
+<span class="comment">%       where n is a vector of the correspondence distances for a source-target image pair</span>
+
+savefile = [savedir <span class="string">'/data2.mat'</span>];
+savemovie = [savedir <span class="string">'/data2_movie.avi'</span>];
+
+<span class="comment">% Run the engine (60 minutes). Only if it hasn't been run for this case before. Otherwise load up the data</span>
+<span class="keyword">if</span>(~exist(savefile, <span class="string">'file'</span>))
+</pre><h2>Load N Images<a name="5"></a></h2><pre class="codeinput">    <span class="comment">% Load</span>
+
+    imgs = cellfunc(@imread, imgs);
+    img_target = imread(img_target);
+
+
+    <span class="comment">% Resize for ease</span>
+
+    imgs = cellfunc(SA_imresize, imgs);
+    img_target = SA_imresize(img_target);
+
+
+    <span class="comment">% Set images upright</span>
+
+    imgs = cellfunc(SA_imrotate, imgs);
+    img_target = SA_imrotate(img_target);
+
+
+    <span class="comment">% % Display them</span>
+    <span class="comment">% for i = 1:length(imgs)</span>
+    <span class="comment">%     figure; imshow(imgs{i}); title(num2str(i));</span>
+    <span class="comment">% end</span>
+    <span class="comment">% figure; imshow(img_target); title('target');</span>
+</pre><h2>Get Correspondences<a name="6"></a></h2><pre class="codeinput">    <span class="comment">% Dense SIFT</span>
+    binSize = 20;
+    stepSize = 10;
+    dsiftcorrs = @(img) getDenseSiftCorrespondences(single(rgb2gray(img)), single(rgb2gray(img_target)), binSize, stepSize);
+    corrs = cellfunc(dsiftcorrs, imgs);
+
+    <span class="comment">% Head position</span>
+
+    <span class="comment">% Manual?</span>
+</pre><h2>Spring-Mass Engine<a name="7"></a></h2><pre class="codeinput">    grid_density = <span class="string">'fine'</span>;
+    engine = @(img, c) SystemAlignment_Engine(c, img, img_target, grid_density);
+    [vFields, imgs_new] = cellfunc2(engine, imgs, corrs);
+</pre><h2>Save Results<a name="8"></a></h2><pre class="codeinput">    mkdir(savedir);
+    save(savefile, <span class="string">'imgs'</span>, <span class="string">'img_target'</span>, <span class="string">'vFields'</span>, <span class="string">'imgs_new'</span>, <span class="string">'corrs'</span>);
+</pre><pre class="codeinput"><span class="keyword">else</span>
+    load(savefile)
+<span class="keyword">end</span>
+</pre><pre class="codeoutput">Warning: Function cummax has the same name as a MATLAB builtin. We suggest you
+rename the function to avoid a potential name conflict. 
+Warning: Function det has the same name as a MATLAB builtin. We suggest you
+rename the function to avoid a potential name conflict. 
+Warning: Function cummax has the same name as a MATLAB builtin. We suggest you
+rename the function to avoid a potential name conflict. 
+Warning: Function det has the same name as a MATLAB builtin. We suggest you
+rename the function to avoid a potential name conflict. 
+</pre><h2>Visualize Correspondences<a name="10"></a></h2><pre class="codeinput"><span class="comment">% for i = 1:length(corrs)</span>
+<span class="comment">%     c = corrs{i};</span>
+<span class="comment">%     f = figure;</span>
+<span class="comment">%     showMatchedFeatures(imgs{i}, img_target, c(:,1:2), c(:,3:4));</span>
+<span class="comment">%     title(['Image ' num2str(i)]);</span>
+<span class="comment">%     makeQuarterScreen(f);</span>
+<span class="comment">% end</span>
+<span class="comment">% pause(1.0);</span>
+</pre><h2>Analyze Correspondences (delete this)<a name="11"></a></h2><pre class="codeinput"><span class="comment">% for i = 1:length(corrs)</span>
+<span class="comment">%     c = corrs{i};</span>
+<span class="comment">%     n = sqrt((c(:,1) - c(:,3)).^2 + (c(:,2) - c(:,4)).^2); % Distance between correspondences</span>
+<span class="comment">%     f = figure; hist(n); makeQuarterScreen(f);</span>
+<span class="comment">%     title(['Hist ' num2str(i)...</span>
+<span class="comment">%         ' mu=' num2str(mean(n))...</span>
+<span class="comment">%         ' std=' num2str(std(n))...</span>
+<span class="comment">%         ' ub=' num2str( mean(n) + 3*std(n) )]);</span>
+<span class="comment">% end</span>
+</pre><h2>Visualize Registered Images with Correspondences<a name="12"></a></h2><pre class="codeinput"><span class="keyword">for</span> i = 1:length(imgs_new)
+    c = corrs{i};
+
+    f = figure(<span class="string">'Name'</span>, [<span class="string">'Image '</span> num2str(i)]);
+    subplot(1,5,1); imshow(imgs{i});
+    subplot(1,5,2); imshow(imgs_new{i});
+    subplot(1,5,3); showMatchedFeatures(imgs{i}, img_target, c(:,1:2), c(:,3:4));
+    subplot(1,5,4); imshowpair(imgs{i}, img_target);
+    subplot(1,5,5); imshowpair(imgs_new{i}, img_target);
+    makeHalfScreen(f);
+    pause(0.5);
+<span class="keyword">end</span>
+</pre><img vspace="5" hspace="5" src="SystemAlignment_01.png" alt=""> <img vspace="5" hspace="5" src="SystemAlignment_02.png" alt=""> <img vspace="5" hspace="5" src="SystemAlignment_03.png" alt=""> <img vspace="5" hspace="5" src="SystemAlignment_04.png" alt=""> <img vspace="5" hspace="5" src="SystemAlignment_05.png" alt=""> <img vspace="5" hspace="5" src="SystemAlignment_06.png" alt=""> <img vspace="5" hspace="5" src="SystemAlignment_07.png" alt=""> <img vspace="5" hspace="5" src="SystemAlignment_08.png" alt=""> <img vspace="5" hspace="5" src="SystemAlignment_09.png" alt=""> <h2>Show images with matching patches, &amp; analyze the integrity of each patch<a name="13"></a></h2><p>close all</p><pre class="codeinput"><span class="comment">% Get point of interest from user</span>
+<span class="comment">% f = figure;</span>
+<span class="comment">% imshow(img_target); title('Target Image - select point to analyze');</span>
+<span class="comment">% [yUser, xUser] = ginput(1);</span>
+<span class="comment">% close(f);</span>
+<span class="comment">% yUser = round(yUser);</span>
+<span class="comment">% xUser = round(xUser);</span>
+
+<span class="comment">% big acne point in mid back</span>
+yUser = 652;
+xUser = 849;
+
+<span class="comment">% Display Target w/ Patch</span>
+w = 200;
+figure;
+displayImageWithPatches(img_target, {[yUser, xUser]}, {w}, {uint8([0 255 0])});
+title(<span class="string">'Target Image - selected patch'</span>);
+
+
+<span class="comment">% Display registered patch on all the images</span>
+
+getpatch = @(im, xx, yy, ww) im( round(xx - ww/2) : round(xx + ww/2) , round(yy - ww/2) : round(yy + ww/2), :);
+patches_reg = {};
+patch_target = getpatch(img_target, xUser, yUser, w);
+<span class="keyword">for</span> i = 1:length(imgs_new)
+    v = vFields{i};
+    x = v(xUser, yUser, 1);
+    y = v(xUser, yUser, 2);
+    patches_reg{i} = getpatch(imgs{i}, x, y, w);
+    patches_unreg{i} = getpatch(imgs{i}, xUser, yUser, w);
+
+
+    <span class="comment">% Figure: Patch on Image</span>
+    centers = {[y x] , [yUser xUser]};
+    clrs = { uint8([255 0 0 ]), uint8([255 255 255 ]) };
+    figure; displayImageWithPatches(imgs{i}, centers, {w, w}, clrs); title([<span class="string">'Image '</span> num2str(i)]);
+
+    <span class="comment">% Figure: Patch Analysis</span>
+    f = figure(<span class="string">'Name'</span>, [<span class="string">'Image '</span> num2str(i)]);
+    subplot(2,4,1); imshow(patches_reg{i}); title(<span class="string">'Source Patch - Matched'</span>);
+    subplot(2,4,2); imshow(patch_target); title(<span class="string">'Target Patch'</span>);
+    subplot(2,4,3); imshowpair(patches_reg{i}, patch_target); title(<span class="string">'Overlay'</span>);
+    subplot(2,4,4); imshow(rgb2gray(abs(patches_reg{i} - patch_target)*2)); title(<span class="string">'Difference'</span>);
+
+    subplot(2,4,5); imshow(patches_unreg{i}); title(<span class="string">'Source Patch - Raw'</span>);
+    subplot(2,4,6); imshow(patch_target); title(<span class="string">'Target Patch'</span>);
+    subplot(2,4,7); imshowpair(patches_unreg{i}, patch_target); title(<span class="string">'Overlay'</span>);
+    subplot(2,4,8); imshow(rgb2gray(abs(patches_unreg{i} - patch_target)*2)); title(<span class="string">'Difference'</span>);
+    makeQuarterScreen(f);
+<span class="keyword">end</span>
+
+pause(1.0);
+</pre><pre class="codeoutput">Warning: Image is too big to fit on screen; displaying at 67% 
+Warning: Image is too big to fit on screen; displaying at 67% 
+Warning: Image is too big to fit on screen; displaying at 67% 
+Warning: Image is too big to fit on screen; displaying at 67% 
+Warning: Image is too big to fit on screen; displaying at 67% 
+Warning: Image is too big to fit on screen; displaying at 67% 
+Warning: Image is too big to fit on screen; displaying at 67% 
+Warning: Image is too big to fit on screen; displaying at 67% 
+Warning: Image is too big to fit on screen; displaying at 67% 
+Warning: Image is too big to fit on screen; displaying at 67% 
+</pre><img vspace="5" hspace="5" src="SystemAlignment_10.png" alt=""> <img vspace="5" hspace="5" src="SystemAlignment_11.png" alt=""> <img vspace="5" hspace="5" src="SystemAlignment_12.png" alt=""> <img vspace="5" hspace="5" src="SystemAlignment_13.png" alt=""> <img vspace="5" hspace="5" src="SystemAlignment_14.png" alt=""> <img vspace="5" hspace="5" src="SystemAlignment_15.png" alt=""> <img vspace="5" hspace="5" src="SystemAlignment_16.png" alt=""> <img vspace="5" hspace="5" src="SystemAlignment_17.png" alt=""> <img vspace="5" hspace="5" src="SystemAlignment_18.png" alt=""> <img vspace="5" hspace="5" src="SystemAlignment_19.png" alt=""> <img vspace="5" hspace="5" src="SystemAlignment_20.png" alt=""> <img vspace="5" hspace="5" src="SystemAlignment_21.png" alt=""> <img vspace="5" hspace="5" src="SystemAlignment_22.png" alt=""> <img vspace="5" hspace="5" src="SystemAlignment_23.png" alt=""> <img vspace="5" hspace="5" src="SystemAlignment_24.png" alt=""> <img vspace="5" hspace="5" src="SystemAlignment_25.png" alt=""> <img vspace="5" hspace="5" src="SystemAlignment_26.png" alt=""> <img vspace="5" hspace="5" src="SystemAlignment_27.png" alt=""> <img vspace="5" hspace="5" src="SystemAlignment_28.png" alt=""> <h2>Create a movie from the new patches<a name="14"></a></h2><p>close all</p><pre class="codeinput"><span class="keyword">for</span> i = 1:length(patches_reg)
+    F(i) = im2frame(patches_reg{i});
+<span class="keyword">end</span>
+figure; movie(F, 2);
+movie2avi(F, savemovie, <span class="string">'compression'</span>, <span class="string">'None'</span>, <span class="string">'FPS'</span>, 1);
+</pre><img vspace="5" hspace="5" src="SystemAlignment_29.png" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2014b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%
+%% Full System Pipeline
+%
+% 1. Load N Images & Choose 1 Target
+% 2. Obtain correspondences between sources and target
+% 3. Spring-mass registration of each pair
+% 4. Select ROI (possibly manually)
+% 5. Display image ROIs across time
+
+clc
+close all
+clear all
+
+%% Setup
+
+% Useful Inline Functions
+
+cellfunc = @(f, c) cellfun(f, c, 'UniformOutput', false);
+cellfunc2 = @(f, c1, c2) cellfun(f, c1, c2, 'UniformOutput', false);
+SA_imresize = @(x) imresize(x, 0.5);
+SA_imrotate = @(x) imrotate(x, 90);
+makeFullScreen = @(f) f.set('units', 'normalized', 'outerposition', [0 0 1 1]);
+makeQuarterScreen = @(f) f.set('units', 'normalized', 'outerposition', [0 0 0.5 0.5]);
+makeHalfScreen = @(f) f.set('units', 'normalized', 'outerposition', [0 0 1 0.5]);
+
+
+% Images used
+
+imgs = {    
+    '/media/esteva/ExtraDrive1/ThrunResearch/NikonD3Data/3-27-2015/4pm/DSC_7771.JPG'
+    '/media/esteva/ExtraDrive1/ThrunResearch/NikonD3Data/3-27-2015/8pm/DSC_7777.JPG'
+    '/media/esteva/ExtraDrive1/ThrunResearch/NikonD3Data/3-28-2015/9am/DSC_7781.JPG'
+    '/media/esteva/ExtraDrive1/ThrunResearch/NikonD3Data/3-29-2015/DSC_7813.JPG'
+    '/media/esteva/ExtraDrive1/ThrunResearch/NikonD3Data/3-30-2015/DSC_7821.JPG'
+    '/media/esteva/ExtraDrive1/ThrunResearch/NikonD3Data/4-1-2015/DSC_7903.JPG' % not all of me is in images
+    '/media/esteva/ExtraDrive1/ThrunResearch/NikonD3Data/4-6-2015/DSC_7952.JPG'
+    '/media/esteva/ExtraDrive1/ThrunResearch/NikonD3Data/4-7-2015/DSC_7964.JPG'
+
+    % Set target to one of these two
+    '/media/esteva/ExtraDrive1/ThrunResearch/NikonD3Data/4-9-2015/DSC_7984.JPG'
+%     % '/media/esteva/ExtraDrive1/ThrunResearch/NikonD3Data/4-11-2015/DSC_7989.JPG'
+};
+img_target = '/media/esteva/ExtraDrive1/ThrunResearch/NikonD3Data/4-11-2015/DSC_7989.JPG';
+
+
+% Add to Path functions that are needed
+
+addpath(genpath('vlfeat')) % handles dense sift
+addpath(genpath('functions')) % small library of my own
+
+% Save into this folder
+savedir = 'SystemAlignmentData';
+
+% Saved Data
+%   data1 contains results from dense sift, removing small matches
+%   data2 contains results from dense sift, removing small matches and anything bigger than mean(n)+3*std(n), 
+%       where n is a vector of the correspondence distances for a source-target image pair
+
+savefile = [savedir '/data2.mat'];
+savemovie = [savedir '/data2_movie.avi'];
+
+% Run the engine (60 minutes). Only if it hasn't been run for this case before. Otherwise load up the data
+if(~exist(savefile, 'file'))
+
+    %% Load N Images
+
+    % Load 
+
+    imgs = cellfunc(@imread, imgs);
+    img_target = imread(img_target);
+
+
+    % Resize for ease
+
+    imgs = cellfunc(SA_imresize, imgs);
+    img_target = SA_imresize(img_target);
+
+
+    % Set images upright
+
+    imgs = cellfunc(SA_imrotate, imgs);
+    img_target = SA_imrotate(img_target);
+
+
+    % % Display them
+    % for i = 1:length(imgs)
+    %     figure; imshow(imgs{i}); title(num2str(i));
+    % end
+    % figure; imshow(img_target); title('target');
+
+    %% Get Correspondences
+
+    % Dense SIFT
+    binSize = 20; 
+    stepSize = 10;
+    dsiftcorrs = @(img) getDenseSiftCorrespondences(single(rgb2gray(img)), single(rgb2gray(img_target)), binSize, stepSize);
+    corrs = cellfunc(dsiftcorrs, imgs);
+
+    % Head position
+
+    % Manual?
+
+    %% Spring-Mass Engine
+
+    grid_density = 'fine';
+    engine = @(img, c) SystemAlignment_Engine(c, img, img_target, grid_density);
+    [vFields, imgs_new] = cellfunc2(engine, imgs, corrs);
+
+    %% Save Results
+    mkdir(savedir);
+    save(savefile, 'imgs', 'img_target', 'vFields', 'imgs_new', 'corrs');
+else
+    load(savefile)
+end
+    
+%% Visualize Correspondences
+
+% for i = 1:length(corrs)
+%     c = corrs{i};
+%     f = figure;
+%     showMatchedFeatures(imgs{i}, img_target, c(:,1:2), c(:,3:4));
+%     title(['Image ' num2str(i)]);
+%     makeQuarterScreen(f);
+% end
+% pause(1.0);
+
+%% Analyze Correspondences (delete this)
+
+% for i = 1:length(corrs)
+%     c = corrs{i};
+%     n = sqrt((c(:,1) - c(:,3)).^2 + (c(:,2) - c(:,4)).^2); % Distance between correspondences
+%     f = figure; hist(n); makeQuarterScreen(f);
+%     title(['Hist ' num2str(i)...
+%         ' mu=' num2str(mean(n))...
+%         ' std=' num2str(std(n))...
+%         ' ub=' num2str( mean(n) + 3*std(n) )]);
+% end
+
+%% Visualize Registered Images with Correspondences
+
+for i = 1:length(imgs_new)
+    c = corrs{i};
+    
+    f = figure('Name', ['Image ' num2str(i)]);
+    subplot(1,5,1); imshow(imgs{i});
+    subplot(1,5,2); imshow(imgs_new{i});
+    subplot(1,5,3); showMatchedFeatures(imgs{i}, img_target, c(:,1:2), c(:,3:4));
+    subplot(1,5,4); imshowpair(imgs{i}, img_target);
+    subplot(1,5,5); imshowpair(imgs_new{i}, img_target);
+    makeHalfScreen(f);
+    pause(0.5);
+end
+
+%% Show images with matching patches, & analyze the integrity of each patch
+% close all
+
+% Get point of interest from user
+% f = figure;
+% imshow(img_target); title('Target Image - select point to analyze');
+% [yUser, xUser] = ginput(1);
+% close(f);
+% yUser = round(yUser);
+% xUser = round(xUser);
+
+% big acne point in mid back
+yUser = 652;
+xUser = 849;
+
+% Display Target w/ Patch
+w = 200;
+figure; 
+displayImageWithPatches(img_target, {[yUser, xUser]}, {w}, {uint8([0 255 0])}); 
+title('Target Image - selected patch');
+
+
+% Display registered patch on all the images
+
+getpatch = @(im, xx, yy, ww) im( round(xx - ww/2) : round(xx + ww/2) , round(yy - ww/2) : round(yy + ww/2), :);
+patches_reg = {};
+patch_target = getpatch(img_target, xUser, yUser, w);
+for i = 1:length(imgs_new)
+    v = vFields{i};
+    x = v(xUser, yUser, 1);
+    y = v(xUser, yUser, 2);
+    patches_reg{i} = getpatch(imgs{i}, x, y, w);
+    patches_unreg{i} = getpatch(imgs{i}, xUser, yUser, w);
+    
+      
+    % Figure: Patch on Image
+    centers = {[y x] , [yUser xUser]};
+    clrs = { uint8([255 0 0 ]), uint8([255 255 255 ]) };
+    figure; displayImageWithPatches(imgs{i}, centers, {w, w}, clrs); title(['Image ' num2str(i)]);
+    
+    % Figure: Patch Analysis
+    f = figure('Name', ['Image ' num2str(i)]);    
+    subplot(2,4,1); imshow(patches_reg{i}); title('Source Patch - Matched');
+    subplot(2,4,2); imshow(patch_target); title('Target Patch');
+    subplot(2,4,3); imshowpair(patches_reg{i}, patch_target); title('Overlay');
+    subplot(2,4,4); imshow(rgb2gray(abs(patches_reg{i} - patch_target)*2)); title('Difference');
+
+    subplot(2,4,5); imshow(patches_unreg{i}); title('Source Patch - Raw');
+    subplot(2,4,6); imshow(patch_target); title('Target Patch');
+    subplot(2,4,7); imshowpair(patches_unreg{i}, patch_target); title('Overlay');
+    subplot(2,4,8); imshow(rgb2gray(abs(patches_unreg{i} - patch_target)*2)); title('Difference');
+    makeQuarterScreen(f);        
+end
+
+pause(1.0);
+
+%% Create a movie from the new patches
+% close all
+
+for i = 1:length(patches_reg)
+    F(i) = im2frame(patches_reg{i});
+end
+figure; movie(F, 2);
+movie2avi(F, savemovie, 'compression', 'None', 'FPS', 1);
+
+
+
+
+
+##### SOURCE END #####
+--></body></html>

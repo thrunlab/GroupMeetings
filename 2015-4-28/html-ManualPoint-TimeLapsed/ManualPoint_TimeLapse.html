@@ -1,0 +1,453 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>ManualPoint_TimeLapse</title><meta name="generator" content="MATLAB 8.4"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2015-04-28"><meta name="DC.source" content="ManualPoint_TimeLapse.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">Manual Point Correspondence:</a></li><li><a href="#3">Load Images of consideration</a></li><li><a href="#4">Display Images</a></li><li><a href="#5">Get a Manual Point of interest (from User)</a></li><li><a href="#6">Extract Top-1 Patches from each target image</a></li><li><a href="#7">Display Patches - Singles</a></li><li><a href="#8">Display Boxes Images - Singles - Top N Patches</a></li><li><a href="#9">Create Movie &amp; Save it</a></li></ul></div><pre class="codeinput"><span class="comment">%</span>
+</pre><h2>Manual Point Correspondence:<a name="2"></a></h2><p>Experiment to test if we can manually select one point for correspondence and then find the matching correspondences across a set of images.</p><p>Steps:   1) Given N images, the user selects a point of interest on 1 image   2) Extract features (RGB, possibly SIFT, possibly CNN) from a local patch, and from far-away global patches   3) Scan across a candidate image and try to find the M best matching points.   4) Display the M points</p><pre class="codeinput">clc
+clear <span class="string">all</span>
+close <span class="string">all</span>
+</pre><h2>Load Images of consideration<a name="3"></a></h2><pre class="codeinput"><span class="comment">% Load source image</span>
+img_source = <span class="string">'/media/esteva/ExtraDrive1/ThrunResearch/NikonD3Data/4-9-2015/DSC_7971.JPG'</span>; <span class="comment">% Source</span>
+img_source = imresize(imread(img_source), 0.1);
+
+<span class="comment">% Load target images</span>
+imgs = {
+    <span class="string">'/media/esteva/ExtraDrive1/ThrunResearch/NikonD3Data/4-9-2015/DSC_7983.JPG'</span> <span class="comment">% Target 1</span>
+    <span class="string">'/media/esteva/ExtraDrive1/ThrunResearch/NikonD3Data/4-11-2015/DSC_7987.JPG'</span>
+    <span class="string">'/media/esteva/ExtraDrive1/ThrunResearch/NikonD3Data/4-6-2015/DSC_7947.JPG'</span>
+    <span class="string">'/media/esteva/ExtraDrive1/ThrunResearch/NikonD3Data/4-1-2015/DSC_7899.JPG'</span>
+    <span class="string">'/media/esteva/ExtraDrive1/ThrunResearch/NikonD3Data/4-6-2015/DSC_7946.JPG'</span>
+};
+imgs = cellfun(@imread, imgs, <span class="string">'UniformOutput'</span>, false);
+resize = @(x) imresize(x, 0.1);
+imgs = cellfun(resize, imgs, <span class="string">'UniformOutput'</span>, false);
+</pre><h2>Display Images<a name="4"></a></h2><pre class="codeinput">f = figure(1);
+APos = [0.5 0.5 0.5 0.5];
+imshow(img_source)    <span class="comment">% image number 1</span>
+f.set(<span class="string">'units'</span>, <span class="string">'normalized'</span>, <span class="string">'outerposition'</span>, APos)
+title(<span class="string">'Input Image A - source'</span>)
+
+<span class="keyword">for</span> m = 1:length(imgs)
+    figure;
+    imshow(imgs{m})
+<span class="comment">%     f.set('units', 'normalized', 'outerposition', APos)</span>
+<span class="keyword">end</span>
+</pre><img vspace="5" hspace="5" src="ManualPoint_TimeLapse_01.png" alt=""> <img vspace="5" hspace="5" src="ManualPoint_TimeLapse_02.png" alt=""> <img vspace="5" hspace="5" src="ManualPoint_TimeLapse_03.png" alt=""> <img vspace="5" hspace="5" src="ManualPoint_TimeLapse_04.png" alt=""> <img vspace="5" hspace="5" src="ManualPoint_TimeLapse_05.png" alt=""> <img vspace="5" hspace="5" src="ManualPoint_TimeLapse_06.png" alt=""> <h2>Get a Manual Point of interest (from User)<a name="5"></a></h2><pre class="codeinput">pause(0.1);
+f = figure(1);
+imshow(img_source);
+f.set(<span class="string">'units'</span>, <span class="string">'normalized'</span>, <span class="string">'outerposition'</span>, APos);
+title(<span class="string">'Input Image A'</span>);
+[dim2_point, dim1_point] = ginput(1);
+point = [dim1_point, dim2_point];
+pause(0.1);
+</pre><img vspace="5" hspace="5" src="ManualPoint_TimeLapse_07.png" alt=""> <h2>Extract Top-1 Patches from each target image<a name="6"></a></h2><pre class="codeinput">display(<span class="string">'Scanning'</span>)
+
+<span class="comment">% Get source patch</span>
+patch_width = 50; <span class="comment">% Make this an even number so that in patch there is a center column/row for flipping later (think of convolutions)</span>
+patch_height = 50;
+patch = getPatches(point, patch_width, patch_height, img_source);
+[patch_height, patch_width,~] = size(patch);
+
+<span class="comment">% Grayscale conversion</span>
+I1 = rgb2gray(img_source);
+imgs_gray = cellfun(@rgb2gray, imgs, <span class="string">'UniformOutput'</span>, false);
+p = rgb2gray(patch);
+
+<span class="comment">% L2-norm scanning -&gt; Heatmap</span>
+func = @(X) scan(p,X);
+hmaps = cellfun(func, imgs_gray, <span class="string">'UniformOutput'</span>, false);
+
+<span class="comment">% Constrain Heatmap by regional minima</span>
+hmaps_r = cellfun(@constrainHeatmap, hmaps, <span class="string">'UniformOutput'</span>, false);
+
+<span class="comment">% Calculate matches in ascending order</span>
+func = @(X) sort(X(:), 1, <span class="string">'ascend'</span>);
+[l2norms, I] = cellfun(func, hmaps_r, <span class="string">'UniformOutput'</span>, false);
+
+<span class="comment">% Extract correspondence points on images</span>
+func = @(v, X) [mod(v(1), size(X,1)), floor( v(1) / size(X,1) )];
+point_found_hmapr = cellfun(func, I, hmaps_r,<span class="string">'UniformOutput'</span>, false);
+
+func = @(v) round(v + size(p)/2);
+point_found =cellfun(func, point_found_hmapr,<span class="string">'UniformOutput'</span>, false);
+
+<span class="comment">% Matched Patches</span>
+func = @(pt, im) getPatches(pt, patch_width, patch_height, im);
+matched_patches = cellfun(func, point_found, imgs, <span class="string">'UniformOutput'</span>, false);
+
+display(<span class="string">'Patches Extracted'</span>)
+</pre><pre class="codeoutput">Scanning
+Patches Extracted
+</pre><h2>Display Patches - Singles<a name="7"></a></h2><pre class="codeinput">numpatches = length(matched_patches)+1;
+
+figure;
+imshow(imresize(patch, [300 300]));
+title(<span class="string">'Original'</span>)
+<span class="keyword">for</span> i = 1:numpatches-1
+    figure;
+    imshow(imresize(matched_patches{i}, [300 300]));
+<span class="keyword">end</span>
+
+<span class="comment">% %% Display Patches - Stacked</span>
+<span class="comment">% numpatches = length(matched_patches)+1;</span>
+<span class="comment">%</span>
+<span class="comment">% f = figure;</span>
+<span class="comment">% LPos = [0.0 0.0 0.5 1.0];</span>
+<span class="comment">% f.set('units', 'normalized', 'outerposition', LPos)</span>
+<span class="comment">% subplot(numpatches,1,1); imshow(patch);</span>
+<span class="comment">% title('Original')</span>
+<span class="comment">% for i = 1:numpatches-1</span>
+<span class="comment">%     subplot(numpatches,1,1+i);</span>
+<span class="comment">%     imshow(matched_patches{i});</span>
+<span class="comment">% end</span>
+</pre><img vspace="5" hspace="5" src="ManualPoint_TimeLapse_08.png" alt=""> <img vspace="5" hspace="5" src="ManualPoint_TimeLapse_09.png" alt=""> <img vspace="5" hspace="5" src="ManualPoint_TimeLapse_10.png" alt=""> <img vspace="5" hspace="5" src="ManualPoint_TimeLapse_11.png" alt=""> <img vspace="5" hspace="5" src="ManualPoint_TimeLapse_12.png" alt=""> <img vspace="5" hspace="5" src="ManualPoint_TimeLapse_13.png" alt=""> <h2>Display Boxes Images - Singles - Top N Patches<a name="8"></a></h2><pre class="codeinput">numimgs = length(imgs)+1;
+N=3;
+
+f = figure;
+
+colour = uint8([255 0 0 ]); <span class="comment">% [R G B]; class of colour must match class of I</span>
+rectangle = int32([point(2:-1:1) - [patch_width/2 patch_height/2], patch_width, patch_height]);
+shapeInserter = vision.ShapeInserter(<span class="string">'BorderColor'</span>,<span class="string">'Custom'</span>,<span class="string">'CustomBorderColor'</span>,colour);
+J = step(shapeInserter, img_source, rectangle);
+imshow(J);
+
+<span class="keyword">for</span> i = 1:numimgs-1
+    colour = uint8([0 255 255]); <span class="comment">% [R G B]; class of colour must match class of I</span>
+
+    J = imgs{i};
+    <span class="keyword">for</span> j = 1:N
+        <span class="comment">% Convert heatmap index to points on images</span>
+        pf_hampr= [mod(I{i}(j), size(hmaps_r{i},1)), floor( I{i}(j) / size(hmaps_r{i},1) )];
+        pf = round(pf_hampr + size(p)/2);
+
+        <span class="comment">% Patch found</span>
+<span class="comment">%         topNpatches{end+1} = getPatches(pf, patch_width, patch_height, imgs{i});</span>
+
+        <span class="comment">% First correspondence is cyan, the rest are white</span>
+        <span class="keyword">if</span>(j == 1)
+            colour = uint8([0 255 255]); <span class="comment">% [R G B]; class of colour must match class of I</span>
+        <span class="keyword">else</span>
+            colour = uint8([255 255 255]); <span class="comment">% [R G B]; class of colour must match class of I</span>
+        <span class="keyword">end</span>
+
+        <span class="comment">% Overlay Rectangle of specified color</span>
+        rectangle = int32([pf(2:-1:1) - [patch_width/2 patch_height/2], patch_width, patch_height]);
+        shapeInserter = vision.ShapeInserter(<span class="string">'BorderColor'</span>,<span class="string">'Custom'</span>,<span class="string">'CustomBorderColor'</span>,colour);
+        J = step(shapeInserter, J, rectangle);
+    <span class="keyword">end</span>
+    figure;
+    imshow(J);
+
+<span class="keyword">end</span>
+
+
+<span class="comment">% %% Display Boxes Images - Stacked</span>
+<span class="comment">% numimgs = length(imgs)+1;</span>
+<span class="comment">% f = figure;</span>
+<span class="comment">% LPos = [0.0 0.0 0.5 1.0];</span>
+<span class="comment">% f.set('units', 'normalized', 'outerposition', LPos)</span>
+<span class="comment">% subplot(numimgs,1,1); imshow(img_source);</span>
+<span class="comment">% for i = 1:numimgs-1</span>
+<span class="comment">%     colour = uint8([0 255 255]); % [R G B]; class of colour must match class of I</span>
+<span class="comment">%</span>
+<span class="comment">%     % Overlay Rectangle of specified color</span>
+<span class="comment">%     pf = point_found{i};</span>
+<span class="comment">%     rectangle = int32([pf(2:-1:1) - [patch_width/2 patch_height/2], patch_width, patch_height]);</span>
+<span class="comment">%     shapeInserter = vision.ShapeInserter('BorderColor','Custom','CustomBorderColor',colour);</span>
+<span class="comment">%     J = step(shapeInserter, imgs{i}, rectangle);</span>
+<span class="comment">%     subplot(numimgs,1,1+i);</span>
+<span class="comment">%     imshow(J);</span>
+<span class="comment">% end</span>
+</pre><img vspace="5" hspace="5" src="ManualPoint_TimeLapse_14.png" alt=""> <img vspace="5" hspace="5" src="ManualPoint_TimeLapse_15.png" alt=""> <img vspace="5" hspace="5" src="ManualPoint_TimeLapse_16.png" alt=""> <img vspace="5" hspace="5" src="ManualPoint_TimeLapse_17.png" alt=""> <img vspace="5" hspace="5" src="ManualPoint_TimeLapse_18.png" alt=""> <img vspace="5" hspace="5" src="ManualPoint_TimeLapse_19.png" alt=""> <h2>Create Movie &amp; Save it<a name="9"></a></h2><p>% Scale up and slow down newsize = [500 500]; slowdown = 10;</p><p>% Source patch resized p = imresize(patch, newsize);</p><p>clear writerObj writerObj = VideoWriter('registration.avi'); writerObj.FrameRate = 1; open(writerObj);</p><p>figure; imshow(p); axis tight set(gca,'nextplot','replacechildren'); set(gcf,'Renderer','zbuffer'); frame = getframe; drawnow writeVideo(writerObj, frame);</p><p>for i = 1:length(matched_patches)     mp = imresize(matched_patches{i}, newsize);     clf     imshow(mp);     axis tight     set(gca,'nextplot','replacechildren');     set(gcf,'Renderer','zbuffer');     drawnow     frame = getframe;</p><pre>   writeVideo(writerObj, frame);
+end</pre><p>close(writerObj);</p><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2014b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%
+%% Manual Point Correspondence:
+%
+% Experiment to test if we can manually select one point for correspondence and then find the matching correspondences across a 
+% set of images. 
+%
+% Steps:
+%   1) Given N images, the user selects a point of interest on 1 image
+%   2) Extract features (RGB, possibly SIFT, possibly CNN) from a local patch, and from far-away global patches
+%   3) Scan across a candidate image and try to find the M best matching points.
+%   4) Display the M points
+
+clc
+clear all 
+close all
+
+%% Load Images of consideration
+
+% Load source image
+img_source = '/media/esteva/ExtraDrive1/ThrunResearch/NikonD3Data/4-9-2015/DSC_7971.JPG'; % Source
+img_source = imresize(imread(img_source), 0.1);
+
+% Load target images
+imgs = {
+    '/media/esteva/ExtraDrive1/ThrunResearch/NikonD3Data/4-9-2015/DSC_7983.JPG' % Target 1    
+    '/media/esteva/ExtraDrive1/ThrunResearch/NikonD3Data/4-11-2015/DSC_7987.JPG'
+    '/media/esteva/ExtraDrive1/ThrunResearch/NikonD3Data/4-6-2015/DSC_7947.JPG'
+    '/media/esteva/ExtraDrive1/ThrunResearch/NikonD3Data/4-1-2015/DSC_7899.JPG'
+    '/media/esteva/ExtraDrive1/ThrunResearch/NikonD3Data/4-6-2015/DSC_7946.JPG'
+};
+imgs = cellfun(@imread, imgs, 'UniformOutput', false);
+resize = @(x) imresize(x, 0.1);
+imgs = cellfun(resize, imgs, 'UniformOutput', false);
+
+%% Display Images
+
+f = figure(1);
+APos = [0.5 0.5 0.5 0.5];
+imshow(img_source)    % image number 1
+f.set('units', 'normalized', 'outerposition', APos)
+title('Input Image A - source')
+
+for m = 1:length(imgs)
+    figure; 
+    imshow(imgs{m})
+%     f.set('units', 'normalized', 'outerposition', APos)
+end
+
+%% Get a Manual Point of interest (from User)
+
+pause(0.1);
+f = figure(1);
+imshow(img_source);
+f.set('units', 'normalized', 'outerposition', APos);
+title('Input Image A');
+[dim2_point, dim1_point] = ginput(1);    
+point = [dim1_point, dim2_point];
+pause(0.1);    
+
+    
+%% Extract Top-1 Patches from each target image
+
+display('Scanning')
+
+% Get source patch
+patch_width = 50; % Make this an even number so that in patch there is a center column/row for flipping later (think of convolutions)
+patch_height = 50;
+patch = getPatches(point, patch_width, patch_height, img_source); 
+[patch_height, patch_width,~] = size(patch);
+
+% Grayscale conversion
+I1 = rgb2gray(img_source);
+imgs_gray = cellfun(@rgb2gray, imgs, 'UniformOutput', false);
+p = rgb2gray(patch);
+
+% L2-norm scanning -> Heatmap    
+func = @(X) scan(p,X);
+hmaps = cellfun(func, imgs_gray, 'UniformOutput', false);
+
+% Constrain Heatmap by regional minima
+hmaps_r = cellfun(@constrainHeatmap, hmaps, 'UniformOutput', false);
+
+% Calculate matches in ascending order
+func = @(X) sort(X(:), 1, 'ascend');
+[l2norms, I] = cellfun(func, hmaps_r, 'UniformOutput', false);    
+
+% Extract correspondence points on images
+func = @(v, X) [mod(v(1), size(X,1)), floor( v(1) / size(X,1) )];
+point_found_hmapr = cellfun(func, I, hmaps_r,'UniformOutput', false);
+
+func = @(v) round(v + size(p)/2);
+point_found =cellfun(func, point_found_hmapr,'UniformOutput', false);
+
+% Matched Patches
+func = @(pt, im) getPatches(pt, patch_width, patch_height, im); 
+matched_patches = cellfun(func, point_found, imgs, 'UniformOutput', false); 
+
+display('Patches Extracted')
+
+%% Display Patches - Singles
+numpatches = length(matched_patches)+1;
+
+figure; 
+imshow(imresize(patch, [300 300]));
+title('Original')
+for i = 1:numpatches-1    
+    figure;
+    imshow(imresize(matched_patches{i}, [300 300]));        
+end
+
+% %% Display Patches - Stacked
+% numpatches = length(matched_patches)+1;
+% 
+% f = figure; 
+% LPos = [0.0 0.0 0.5 1.0];
+% f.set('units', 'normalized', 'outerposition', LPos)
+% subplot(numpatches,1,1); imshow(patch);
+% title('Original')
+% for i = 1:numpatches-1    
+%     subplot(numpatches,1,1+i); 
+%     imshow(matched_patches{i});        
+% end
+
+
+%% Display Boxes Images - Singles - Top N Patches
+numimgs = length(imgs)+1;
+N=3;
+
+f = figure; 
+
+colour = uint8([255 0 0 ]); % [R G B]; class of colour must match class of I        
+rectangle = int32([point(2:-1:1) - [patch_width/2 patch_height/2], patch_width, patch_height]);
+shapeInserter = vision.ShapeInserter('BorderColor','Custom','CustomBorderColor',colour);
+J = step(shapeInserter, img_source, rectangle);
+imshow(J);
+
+for i = 1:numimgs-1    
+    colour = uint8([0 255 255]); % [R G B]; class of colour must match class of I        
+    
+    J = imgs{i};
+    for j = 1:N
+        % Convert heatmap index to points on images
+        pf_hampr= [mod(I{i}(j), size(hmaps_r{i},1)), floor( I{i}(j) / size(hmaps_r{i},1) )];
+        pf = round(pf_hampr + size(p)/2);
+
+        % Patch found    
+%         topNpatches{end+1} = getPatches(pf, patch_width, patch_height, imgs{i}); 
+
+        % First correspondence is cyan, the rest are white    
+        if(j == 1)
+            colour = uint8([0 255 255]); % [R G B]; class of colour must match class of I        
+        else
+            colour = uint8([255 255 255]); % [R G B]; class of colour must match class of I
+        end
+
+        % Overlay Rectangle of specified color
+        rectangle = int32([pf(2:-1:1) - [patch_width/2 patch_height/2], patch_width, patch_height]);
+        shapeInserter = vision.ShapeInserter('BorderColor','Custom','CustomBorderColor',colour);
+        J = step(shapeInserter, J, rectangle);
+    end
+    figure;
+    imshow(J);
+    
+end
+
+
+% %% Display Boxes Images - Stacked
+% numimgs = length(imgs)+1;
+% f = figure; 
+% LPos = [0.0 0.0 0.5 1.0];
+% f.set('units', 'normalized', 'outerposition', LPos)
+% subplot(numimgs,1,1); imshow(img_source);
+% for i = 1:numimgs-1    
+%     colour = uint8([0 255 255]); % [R G B]; class of colour must match class of I        
+% 
+%     % Overlay Rectangle of specified color
+%     pf = point_found{i};
+%     rectangle = int32([pf(2:-1:1) - [patch_width/2 patch_height/2], patch_width, patch_height]);
+%     shapeInserter = vision.ShapeInserter('BorderColor','Custom','CustomBorderColor',colour);
+%     J = step(shapeInserter, imgs{i}, rectangle);
+%     subplot(numimgs,1,1+i); 
+%     imshow(J);
+% end
+
+ 
+%% Create Movie & Save it
+% 
+% % Scale up and slow down
+% newsize = [500 500];
+% slowdown = 10;
+% 
+% % Source patch resized
+% p = imresize(patch, newsize);
+% 
+% clear writerObj
+% writerObj = VideoWriter('registration.avi');
+% writerObj.FrameRate = 1;
+% open(writerObj);
+% 
+% figure;
+% imshow(p);
+% axis tight
+% set(gca,'nextplot','replacechildren');
+% set(gcf,'Renderer','zbuffer');
+% frame = getframe;
+% drawnow
+% writeVideo(writerObj, frame);
+% 
+% 
+% for i = 1:length(matched_patches)
+%     mp = imresize(matched_patches{i}, newsize);
+%     clf
+%     imshow(mp);
+%     axis tight
+%     set(gca,'nextplot','replacechildren');
+%     set(gcf,'Renderer','zbuffer');
+%     drawnow
+%     frame = getframe;
+%     
+%     writeVideo(writerObj, frame);
+% end
+% 
+% close(writerObj);
+
+##### SOURCE END #####
+--></body></html>

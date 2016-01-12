@@ -1,0 +1,306 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Registration</title><meta name="generator" content="MATLAB 8.4"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2015-05-11"><meta name="DC.source" content="Registration.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">Image Registration - SIFT Feature Matching</a></li><li><a href="#3">Image Selection</a></li><li><a href="#4">Image Preproccesing</a></li><li><a href="#5">Show Each Image Separately</a></li><li><a href="#6">Show OVerlaid image pair</a></li><li><a href="#7">Registration</a></li></ul></div><pre class="codeinput">clear <span class="string">all</span>
+clc
+close <span class="string">all</span>
+</pre><h2>Image Registration - SIFT Feature Matching<a name="2"></a></h2><pre class="codeinput"><span class="comment">%The purpose here is to take multiple images from the Nikon D3 that I've</span>
+<span class="comment">%taken of my back and be able to align them along the grooves of my back,</span>
+<span class="comment">%more than anything</span>
+
+<span class="comment">% In this experiment, we follow MATLAB's MRI image alignment tutorial:</span>
+<span class="comment">% http://www.mathworks.com/help/images/examples/find-image-rotation-and-scale-using-automated-feature-matching.html</span>
+
+<span class="comment">% Initial results are bad - only two surf points are matched.</span>
+
+<span class="comment">% The results here:</span>
+<span class="comment">% http://people.csail.mit.edu/halordain/2D%20Imaging/Chris%20Tsai%20-%20Preprocessing%20for%20Features.pdf</span>
+<span class="comment">% Suggest doing the following to enhance the matching</span>
+<span class="comment">%   dynamic range maximization</span>
+<span class="comment">%   amplitude scaling</span>
+<span class="comment">%   illumination compensation</span>
+<span class="comment">%   histogram equalization</span>
+
+<span class="comment">% If I'm going to use fancy preprocessing techniques and old school SIFT, I</span>
+<span class="comment">% really do need to do background subtraction, and filter out clothes and</span>
+<span class="comment">% such. So maybe like a skin detector?</span>
+</pre><h2>Image Selection<a name="3"></a></h2><pre class="codeinput"><span class="comment">% March 27th from the same photoshoot</span>
+imgs_sameShoot = {
+    <span class="string">'/media/esteva/ExtraDrive1/ThrunResearch/NikonD3Data/tmp_acne-induction/DSC_7770.JPG'</span>
+    <span class="string">'/media/esteva/ExtraDrive1/ThrunResearch/NikonD3Data/tmp_acne-induction/DSC_7771.JPG'</span>
+    };
+
+<span class="comment">% March 27th across photoshoots</span>
+imgs_crossShoot_27March_4_8pm = {
+    <span class="string">'/media/esteva/ExtraDrive1/ThrunResearch/NikonD3Data/3-27-2015/4pm/DSC_7771.JPG'</span>
+    <span class="string">'/media/esteva/ExtraDrive1/ThrunResearch/NikonD3Data/3-27-2015/8pm/DSC_7775.JPG'</span>
+    };
+
+<span class="comment">% MArch 27th at 8pm and March 28th at 10am</span>
+imgs_crossShoot_27March_8pm_28March = {
+    <span class="string">'/media/esteva/ExtraDrive1/ThrunResearch/NikonD3Data/3-27-2015/8pm/DSC_7776.JPG'</span>
+    <span class="string">'/media/esteva/ExtraDrive1/ThrunResearch/NikonD3Data/3-28-2015/9am/DSC_7780.JPG'</span>
+    };
+
+<span class="comment">% MArch 27th at 8pm and March 28th at 10am - Square cropped</span>
+imgs_cropped = {
+    <span class="string">'/media/esteva/ExtraDrive1/ThrunResearch/NikonD3Data/tmp_acne-induction/DSC_7776_cropped.JPG'</span>
+    <span class="string">'/media/esteva/ExtraDrive1/ThrunResearch/NikonD3Data/tmp_acne-induction/DSC_7780_cropped.jpg'</span>
+    };
+
+<span class="comment">% Rob's brother - backshots</span>
+imgs_robbro = {
+    <span class="string">'/media/esteva/ExtraDrive1/ThrunResearch/MedicalData/tracking/IMG_9089.JPG'</span>
+    <span class="string">'/media/esteva/ExtraDrive1/ThrunResearch/MedicalData/tracking/IMG_9092.JPG'</span>
+    };
+
+<span class="comment">% Select Images</span>
+imgs = imgs_robbro;
+
+<span class="comment">% Load</span>
+im1 = rgb2gray(imread(imgs{1})); <span class="comment">% Moving</span>
+im2 = rgb2gray(imread(imgs{2})); <span class="comment">% Fixed</span>
+</pre><h2>Image Preproccesing<a name="4"></a></h2><pre class="codeinput"><span class="comment">%   dynamic range maximization</span>
+im1 = double(im1);
+im2 = double(im2);
+im1 = (im1 - min(im1(:))) / max(im1(:));
+im2 = (im2 - min(im2(:))) / max(im2(:));
+
+<span class="comment">% Enhance contrast</span>
+im1 = imadjust(im1);
+im2 = imadjust(im2);
+
+level = graythresh(im1);
+bw = im2bw(im1,level);
+bw = bwareaopen(bw, 50);
+imshow(bw)
+
+<span class="comment">%   amplitude scaling</span>
+<span class="comment">%   illumination compensation</span>
+<span class="comment">%   histogram equalization</span>
+</pre><pre class="codeoutput">Warning: Image is too big to fit on screen; displaying at 33% 
+</pre><img vspace="5" hspace="5" src="Registration_01.png" alt=""> <h2>Show Each Image Separately<a name="5"></a></h2><pre class="codeinput">figure;
+imshowpair(im1, im2, <span class="string">'montage'</span>)
+</pre><pre class="codeoutput">Warning: Image is too big to fit on screen; displaying at 17% 
+</pre><img vspace="5" hspace="5" src="Registration_02.png" alt=""> <h2>Show OVerlaid image pair<a name="6"></a></h2><pre class="codeinput">figure;
+imshowpair(im1, im2)
+title(<span class="string">'unregistered'</span>)
+</pre><pre class="codeoutput">Warning: Image is too big to fit on screen; displaying at 33% 
+</pre><img vspace="5" hspace="5" src="Registration_03.png" alt=""> <h2>Registration<a name="7"></a></h2><pre class="codeinput"><span class="comment">%Detect features in both images.</span>
+args = {};
+<span class="comment">% args = {'MetricThreshold', 200, 'NumOctaves', 1, 'NumScaleLevels', 6};</span>
+ptsim1  = detectSURFFeatures(im1, args{:});
+ptsim2 = detectSURFFeatures(im2, args{:});
+
+<span class="comment">%Extract feature descriptors.</span>
+[featuresim1,   validPtsim1]  = extractFeatures(im1,  ptsim1);
+[featuresim2, validPtsim2]  = extractFeatures(im2, ptsim2);
+
+<span class="comment">% Match features by using their descriptors.</span>
+indexPairs = matchFeatures(featuresim1, featuresim2);
+
+<span class="comment">% Retrieve locations of corresponding points for each image.</span>
+matchedim1  = validPtsim1(indexPairs(:,1));
+matchedim2 = validPtsim2(indexPairs(:,2));
+
+<span class="comment">% Show point matches. Notice the presence of outliers.</span>
+figure;
+showMatchedFeatures(im1,im2,matchedim1,matchedim2);
+title(<span class="string">'Putatively matched points (including outliers)'</span>);
+</pre><pre class="codeoutput">Warning: Image is too big to fit on screen; displaying at 33% 
+</pre><img vspace="5" hspace="5" src="Registration_04.png" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2014b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%%
+clear all
+clc
+close all
+
+%% Image Registration - SIFT Feature Matching
+%The purpose here is to take multiple images from the Nikon D3 that I've
+%taken of my back and be able to align them along the grooves of my back,
+%more than anything
+
+% In this experiment, we follow MATLAB's MRI image alignment tutorial:
+% http://www.mathworks.com/help/images/examples/find-image-rotation-and-scale-using-automated-feature-matching.html
+
+% Initial results are bad - only two surf points are matched.
+
+% The results here:
+% http://people.csail.mit.edu/halordain/2D%20Imaging/Chris%20Tsai%20-%20Preprocessing%20for%20Features.pdf
+% Suggest doing the following to enhance the matching
+%   dynamic range maximization
+%   amplitude scaling
+%   illumination compensation
+%   histogram equalization 
+
+% If I'm going to use fancy preprocessing techniques and old school SIFT, I
+% really do need to do background subtraction, and filter out clothes and
+% such. So maybe like a skin detector?
+
+%% Image Selection
+
+% March 27th from the same photoshoot
+imgs_sameShoot = {
+    '/media/esteva/ExtraDrive1/ThrunResearch/NikonD3Data/tmp_acne-induction/DSC_7770.JPG'
+    '/media/esteva/ExtraDrive1/ThrunResearch/NikonD3Data/tmp_acne-induction/DSC_7771.JPG'
+    };
+
+% March 27th across photoshoots
+imgs_crossShoot_27March_4_8pm = {
+    '/media/esteva/ExtraDrive1/ThrunResearch/NikonD3Data/3-27-2015/4pm/DSC_7771.JPG'
+    '/media/esteva/ExtraDrive1/ThrunResearch/NikonD3Data/3-27-2015/8pm/DSC_7775.JPG'   
+    };
+
+% MArch 27th at 8pm and March 28th at 10am
+imgs_crossShoot_27March_8pm_28March = {
+    '/media/esteva/ExtraDrive1/ThrunResearch/NikonD3Data/3-27-2015/8pm/DSC_7776.JPG'
+    '/media/esteva/ExtraDrive1/ThrunResearch/NikonD3Data/3-28-2015/9am/DSC_7780.JPG'
+    };
+
+% MArch 27th at 8pm and March 28th at 10am - Square cropped
+imgs_cropped = {
+    '/media/esteva/ExtraDrive1/ThrunResearch/NikonD3Data/tmp_acne-induction/DSC_7776_cropped.JPG'
+    '/media/esteva/ExtraDrive1/ThrunResearch/NikonD3Data/tmp_acne-induction/DSC_7780_cropped.jpg'
+    };
+
+% Rob's brother - backshots
+imgs_robbro = {
+    '/media/esteva/ExtraDrive1/ThrunResearch/MedicalData/tracking/IMG_9089.JPG'
+    '/media/esteva/ExtraDrive1/ThrunResearch/MedicalData/tracking/IMG_9092.JPG'
+    };
+
+% Select Images
+imgs = imgs_robbro;
+
+% Load
+im1 = rgb2gray(imread(imgs{1})); % Moving
+im2 = rgb2gray(imread(imgs{2})); % Fixed
+
+%% Image Preproccesing
+
+%   dynamic range maximization
+im1 = double(im1);
+im2 = double(im2);
+im1 = (im1 - min(im1(:))) / max(im1(:));
+im2 = (im2 - min(im2(:))) / max(im2(:));
+
+% Enhance contrast
+im1 = imadjust(im1);
+im2 = imadjust(im2);
+
+level = graythresh(im1);
+bw = im2bw(im1,level);
+bw = bwareaopen(bw, 50);
+imshow(bw)
+
+%   amplitude scaling
+%   illumination compensation
+%   histogram equalization 
+
+%% Show Each Image Separately
+figure;
+imshowpair(im1, im2, 'montage')
+
+
+%% Show OVerlaid image pair
+figure;
+imshowpair(im1, im2)
+title('unregistered')
+
+
+%% Registration
+
+%Detect features in both images.
+args = {};
+% args = {'MetricThreshold', 200, 'NumOctaves', 1, 'NumScaleLevels', 6};
+ptsim1  = detectSURFFeatures(im1, args{:});
+ptsim2 = detectSURFFeatures(im2, args{:});
+
+%Extract feature descriptors.
+[featuresim1,   validPtsim1]  = extractFeatures(im1,  ptsim1);
+[featuresim2, validPtsim2]  = extractFeatures(im2, ptsim2);
+
+% Match features by using their descriptors.
+indexPairs = matchFeatures(featuresim1, featuresim2);
+
+% Retrieve locations of corresponding points for each image.
+matchedim1  = validPtsim1(indexPairs(:,1));
+matchedim2 = validPtsim2(indexPairs(:,2));
+
+% Show point matches. Notice the presence of outliers.
+figure;
+showMatchedFeatures(im1,im2,matchedim1,matchedim2);
+title('Putatively matched points (including outliers)');
+
+
+
+
+
+
+##### SOURCE END #####
+--></body></html>

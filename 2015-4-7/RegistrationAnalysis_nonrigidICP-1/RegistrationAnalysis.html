@@ -1,0 +1,399 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>Non-Rigid ICP With Local Deformations on NikonD3 Skin-Mark System</title><meta name="generator" content="MATLAB 8.4"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2015-04-06"><meta name="DC.source" content="RegistrationAnalysis.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>Non-Rigid ICP With Local Deformations on NikonD3 Skin-Mark System</h1><!--introduction--><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Discussion &amp; Experimental Setup</a></li><li><a href="#2">Load Registration Results - Data_1</a></li><li><a href="#3">Display the images</a></li><li><a href="#4">Display point clouds of the source and target</a></li><li><a href="#5">Display the same point clouds overlaid</a></li><li><a href="#6">Convert registered point cloud back to an image &amp; display it</a></li><li><a href="#7">Given an image patch in the target image, extract the corresponding patch in the source image</a></li><li><a href="#8">Plot 2D vector field difference between source and registered results</a></li><li><a href="#9">Heatmap of 3D displacement</a></li></ul></div><h2>Discussion &amp; Experimental Setup<a name="1"></a></h2><p><b>Experimental Setup</b></p><p>In this experiment we apply non-rigid ICP (nICP) to the problem of aligning images of a person's back. Images are taken in the same pose and the same lighting, but there are obvious differences between them due to the deformability of individuals.</p><p>To account for these differences, we apply nICP. Of two images being considered, one is called the 'target', and the other is called the 'source', and nICP attempts to register the source onto the target using the following procedure:   rigid ICP -&gt; non-rigid deformation -&gt; local surface optimization</p><p>this is a procedure designed to work with 3D point clouds of sensor data (consider, for example, the cartilage data examples that come with the code). So as a preprocessing step we convert the images into point clouds of (x,y,z) coordinates as (x_pixel, y_pixel, grayscale_intensity). The procedure then registers the point clouds together, and we can use this registration to map correspondences between pixels in the target and pixels in the source.</p><p><b>Discussion</b></p><p>What we find is that it does not work. While the point-cloud registration does quite well (as can be seen below), when we try to match a ROI in the target image to its corresponding patch in the source image, the results are highly inaccurate.</p><p>We diagnose this bizarre contradiction by considering the vector field displacement of the source and registered point clouds, as well as the pixel intensity difference between the source and registered point clouds. What we see is that the vector fields are not as heavily displaced as expected. Much of the back region is non-displaced, but the head region is. Additionally what we see are notable differences in the Z-axis intensity of the source and registered point clouds. This is contrary to what we want. We want shifting in the x-y axes but minimal motion in Z.</p><p>We conclude that <b>this registration did not work</b> due to too much shifting in Z and not enough x-y motion.</p><p><b>Possible Solution</b></p><p>We may be able to account for the z motion by <b>serious</b> scaling of the z values to force the algorithms to displace more in x-y.</p><h2>Load Registration Results - Data_1<a name="2"></a></h2><pre class="codeinput"><span class="comment">% Load the registration results of a set of images</span>
+load(<span class="string">'Results_all/data_1.mat'</span>);
+</pre><h2>Display the images<a name="3"></a></h2><pre class="codeinput">figure(<span class="string">'units'</span>,<span class="string">'normalized'</span>,<span class="string">'outerposition'</span>,[0 0 0.5 0.5]);
+imshowpair(im_source, im_target, <span class="string">'montage'</span>); title(<span class="string">' Source - Target (unregistered)'</span>);
+</pre><img vspace="5" hspace="5" src="RegistrationAnalysis_01.png" alt=""> <h2>Display point clouds of the source and target<a name="4"></a></h2><pre class="codeinput">d = 0.4;
+figure(<span class="string">'units'</span>,<span class="string">'normalized'</span>,<span class="string">'outerposition'</span>,[0 0 d d]);
+trisurf(sourceF, sourceV(:,1), sourceV(:,2), sourceV(:,3),<span class="string">'Edgecolor'</span>,<span class="string">'none'</span>); title(<span class="string">'Source'</span>); view(0,90)
+figure(<span class="string">'units'</span>,<span class="string">'normalized'</span>,<span class="string">'outerposition'</span>,[0 0 d d]);
+trisurf(targetF, targetV(:,1), targetV(:,2), targetV(:,3),<span class="string">'Edgecolor'</span>,<span class="string">'none'</span>); title(<span class="string">'target'</span>); view(0,90)
+</pre><img vspace="5" hspace="5" src="RegistrationAnalysis_02.png" alt=""> <img vspace="5" hspace="5" src="RegistrationAnalysis_03.png" alt=""> <h2>Display the same point clouds overlaid<a name="5"></a></h2><pre class="codeinput">figure(<span class="string">'units'</span>,<span class="string">'normalized'</span>,<span class="string">'outerposition'</span>,[0 0 d d]);
+hold <span class="string">on</span>;
+trisurf(sourceF, registeredV(:,1), registeredV(:,2), registeredV(:,3),<span class="string">'Edgecolor'</span>,<span class="string">'none'</span>, <span class="string">'FaceAlpha'</span>, 0.5);
+trisurf(targetF, targetV(:,1), targetV(:,2), targetV(:,3), <span class="string">'Edgecolor'</span>,<span class="string">'none'</span>, <span class="string">'FaceAlpha'</span>, 0.5);
+title(<span class="string">'Registered and Target'</span>);
+view(0,90)
+
+figure(<span class="string">'units'</span>,<span class="string">'normalized'</span>,<span class="string">'outerposition'</span>,[0 0 d d]);
+hold <span class="string">on</span>;
+trisurf(sourceF, sourceV(:,1), sourceV(:,2), sourceV(:,3), <span class="string">'Edgecolor'</span>,<span class="string">'none'</span>, <span class="string">'FaceAlpha'</span>, 0.5);
+trisurf(targetF, targetV(:,1), targetV(:,2), targetV(:,3), <span class="string">'Edgecolor'</span>,<span class="string">'none'</span>, <span class="string">'FaceAlpha'</span>,0.5);
+title(<span class="string">'Source and Target'</span>);
+view(0,90)
+</pre><img vspace="5" hspace="5" src="RegistrationAnalysis_04.png" alt=""> <img vspace="5" hspace="5" src="RegistrationAnalysis_05.png" alt=""> <h2>Convert registered point cloud back to an image &amp; display it<a name="6"></a></h2><pre class="codeinput"><span class="comment">% Round values to make them integers</span>
+reg = round(registeredV);
+
+<span class="comment">% Clip (x,y) values of registered image to be within the target's</span>
+xmax = size(im_target,2);
+ymax = size(im_target,1);
+reg(reg(:,1) &gt; xmax,:) = [];
+reg(reg(:,2) &gt; ymax,:) = [];
+
+xmin = 1;
+ymin = 1;
+reg(reg(:,1) &lt; xmin, :) = [];
+reg(reg(:,2) &lt; ymin, :) = [];
+
+<span class="comment">% Insert (1,1) and (xmax,ymax) to registered point cloud to 'tether' it to those points for sparse matrix casting</span>
+reg(end+1,:) = [1 1 0];
+reg(end+1,:) = [xmax ymax 0];
+
+<span class="comment">% Average together the points that have the same (x,y) coordinates. These are the results of cloud points being clustered very closely together</span>
+reg_count = reg;
+reg_count(:,3) = 1;
+
+F = full(sparse(reg(:,1), reg(:,2), reg(:,3)));
+F_count = full(sparse(reg_count(:,1), reg_count(:,2), reg_count(:,3)));
+F_count(F_count == 0) = 1;
+
+imreg = F ./ F_count;
+imtar = full(sparse(targetV(:,1), targetV(:,2), targetV(:,3)));
+
+<span class="comment">% Display registered image on top of target image</span>
+figure;
+imshowpair(imreg, imtar, <span class="string">'montage'</span>); title(<span class="string">'registered image -------------------- target image'</span>)
+<span class="comment">% imshowpair(imreg, imtar);</span>
+</pre><img vspace="5" hspace="5" src="RegistrationAnalysis_06.png" alt=""> <h2>Given an image patch in the target image, extract the corresponding patch in the source image<a name="7"></a></h2><pre class="codeinput"><span class="comment">% Pick image patch in target</span>
+x = 763; y = 473; w = 25; <span class="comment">% Right Shoulder Blade</span>
+
+<span class="comment">% Extract Target Patch</span>
+xvals = x - w : x + w;
+yvals = y - w : y + w;
+patch = im_target(yvals, xvals);
+
+<span class="comment">% Display Target Image and Target Patch</span>
+h_patches = figure(<span class="string">'Name'</span>, <span class="string">'Target Image and Patch'</span>, <span class="string">'units'</span>,<span class="string">'normalized'</span>,<span class="string">'outerposition'</span>,[0 0 1 1]);
+
+subplot(2,2,1);
+imshow( insertShape(im_target, <span class="string">'Rectangle'</span>, [min(xvals) min(yvals) range(xvals) range(yvals)], <span class="string">'LineWidth'</span>, 5) ); title(<span class="string">'Target Image'</span>)
+subplot(2,2,2);
+imshow(patch); title(<span class="string">'Target Image Patch'</span>)
+
+<span class="comment">% Find corresponding patch in source image - I don't think this is correct....</span>
+ind = 1:size(registeredV,1);
+ind(registeredV(:,1) &lt; min(xvals)) = inf;
+ind(registeredV(:,1) &gt; max(xvals)) = inf;
+ind(registeredV(:,2) &lt; min(yvals)) = inf;
+ind(registeredV(:,2) &gt; max(yvals)) = inf;
+ind(ind == inf) = [];
+ps = sourceV(ind,:);
+
+<span class="comment">% Extract Source Patch Exactly</span>
+mask = uint8(zeros(size(im_source)));
+<span class="keyword">for</span> i = 1:length(ps)
+    p = ps(i,1:2);
+    mask(p(2), p(1)) = 1;
+<span class="keyword">end</span>
+yrange = min(ps(:,2)):max(ps(:,2));
+xrange = min(ps(:,1)):max(ps(:,1));
+mask = mask .* im_source;
+patch_source = mask(yrange, xrange);
+
+<span class="comment">% Plot Source Patch</span>
+subplot(2,2,3);
+imshow( insertShape(im_source, <span class="string">'Rectangle'</span>, [min(xrange) min(yrange) range(xrange) range(yrange)], <span class="string">'LineWidth'</span>, 5) ); title(<span class="string">'Source Image'</span>)
+subplot(2,2,4);
+imshow(patch_source); title(<span class="string">'Source Image Patch'</span>)
+</pre><img vspace="5" hspace="5" src="RegistrationAnalysis_07.png" alt=""> <h2>Plot 2D vector field difference between source and registered results<a name="8"></a></h2><pre class="codeinput">x = sourceV(:,1);
+y = sourceV(:,2);
+u = registeredV(:,1) - sourceV(:,1);
+v = registeredV(:,2) - sourceV(:,2);
+
+subs = 200;
+x = x(1:subs:end);
+y = y(1:subs:end);
+u = u(1:subs:end);
+v = v(1:subs:end);
+
+figure(<span class="string">'units'</span>,<span class="string">'normalized'</span>,<span class="string">'outerposition'</span>,[0 0 0.5 0.5]);
+trisurf(sourceF, sourceV(:,1), sourceV(:,2), sourceV(:,3), <span class="string">'Edgecolor'</span>,<span class="string">'none'</span>, <span class="string">'FaceAlpha'</span>, 0.25);
+hold <span class="string">on</span>;
+quiver(x,y,u,v);
+title(<span class="string">'X-Y Vector Field from Source to Registered'</span>);
+view(0,90)
+</pre><img vspace="5" hspace="5" src="RegistrationAnalysis_08.png" alt=""> <h2>Heatmap of 3D displacement<a name="9"></a></h2><pre class="codeinput">zdiff = registeredV(:,3) - sourceV(:,3);
+m = full(sparse(sourceV(:,1), sourceV(:,2), zdiff));
+
+figure; imshow( mat2gray(m) );
+title(<span class="string">'Intensity denotes the Z-change from source to registration'</span>)
+colorbar;
+</pre><img vspace="5" hspace="5" src="RegistrationAnalysis_09.png" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2014b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Non-Rigid ICP With Local Deformations on NikonD3 Skin-Mark System
+%
+%%% Discussion & Experimental Setup
+% *Experimental Setup*
+%
+% In this experiment we apply non-rigid ICP (nICP) to the problem of
+% aligning images of a person's back. Images are taken in the same pose and
+% the same lighting, but there are obvious differences between them due to
+% the deformability of individuals.
+%
+% To account for these differences, we apply nICP. Of two images being
+% considered, one is called the 'target', and the other is called the
+% 'source', and nICP attempts to register the source onto the target using
+% the following procedure: 
+%   rigid ICP -> non-rigid deformation -> local surface optimization
+%
+% this is a procedure designed to work with 3D point clouds of sensor data
+% (consider, for example, the cartilage data examples that come with the
+% code). So as a preprocessing step we convert the images into point clouds
+% of (x,y,z) coordinates as (x_pixel, y_pixel, grayscale_intensity). The
+% procedure then registers the point clouds together, and we can use this
+% registration to map correspondences between pixels in the target and
+% pixels in the source.
+%
+% *Discussion*
+%
+% What we find is that it does not work. While the point-cloud registration
+% does quite well (as can be seen below), when we try to match a ROI in the target image to its
+% corresponding patch in the source image, the results are highly inaccurate. 
+%
+% We diagnose this bizarre contradiction by considering the
+% vector field displacement of the source and registered point clouds, as
+% well as the pixel intensity difference between the source and registered
+% point clouds. What we see is that the vector fields are not as heavily
+% displaced as expected. Much of the back region is non-displaced, but the
+% head region is. Additionally what we see are notable differences in the
+% Z-axis intensity of the source and registered point clouds. This is
+% contrary to what we want. We want shifting in the x-y axes but minimal
+% motion in Z.
+%
+% We conclude that *this registration did not work* due to too much shifting
+% in Z and not enough x-y motion. 
+%
+% *Possible Solution*
+%
+% We may be able to account for the z motion by *serious* scaling of the z values to
+% force the algorithms to displace more in x-y.
+%
+
+%% Load Registration Results - Data_1
+
+% Load the registration results of a set of images
+load('Results_all/data_1.mat');
+
+
+%% Display the images
+figure('units','normalized','outerposition',[0 0 0.5 0.5]); 
+imshowpair(im_source, im_target, 'montage'); title(' Source - Target (unregistered)');
+
+
+%% Display point clouds of the source and target
+d = 0.4;
+figure('units','normalized','outerposition',[0 0 d d]); 
+trisurf(sourceF, sourceV(:,1), sourceV(:,2), sourceV(:,3),'Edgecolor','none'); title('Source'); view(0,90)
+figure('units','normalized','outerposition',[0 0 d d]);
+trisurf(targetF, targetV(:,1), targetV(:,2), targetV(:,3),'Edgecolor','none'); title('target'); view(0,90)
+
+%% Display the same point clouds overlaid
+figure('units','normalized','outerposition',[0 0 d d]); 
+hold on;
+trisurf(sourceF, registeredV(:,1), registeredV(:,2), registeredV(:,3),'Edgecolor','none', 'FaceAlpha', 0.5);
+trisurf(targetF, targetV(:,1), targetV(:,2), targetV(:,3), 'Edgecolor','none', 'FaceAlpha', 0.5); 
+title('Registered and Target');
+view(0,90)
+
+figure('units','normalized','outerposition',[0 0 d d]); 
+hold on;
+trisurf(sourceF, sourceV(:,1), sourceV(:,2), sourceV(:,3), 'Edgecolor','none', 'FaceAlpha', 0.5); 
+trisurf(targetF, targetV(:,1), targetV(:,2), targetV(:,3), 'Edgecolor','none', 'FaceAlpha',0.5);
+title('Source and Target');
+view(0,90)
+
+%% Convert registered point cloud back to an image & display it
+
+% Round values to make them integers 
+reg = round(registeredV);
+
+% Clip (x,y) values of registered image to be within the target's
+xmax = size(im_target,2);
+ymax = size(im_target,1);
+reg(reg(:,1) > xmax,:) = [];
+reg(reg(:,2) > ymax,:) = [];
+
+xmin = 1;
+ymin = 1;
+reg(reg(:,1) < xmin, :) = [];
+reg(reg(:,2) < ymin, :) = [];
+
+% Insert (1,1) and (xmax,ymax) to registered point cloud to 'tether' it to those points for sparse matrix casting
+reg(end+1,:) = [1 1 0];
+reg(end+1,:) = [xmax ymax 0];
+
+% Average together the points that have the same (x,y) coordinates. These are the results of cloud points being clustered very closely together
+reg_count = reg;
+reg_count(:,3) = 1;
+
+F = full(sparse(reg(:,1), reg(:,2), reg(:,3)));
+F_count = full(sparse(reg_count(:,1), reg_count(:,2), reg_count(:,3)));
+F_count(F_count == 0) = 1;
+
+imreg = F ./ F_count;
+imtar = full(sparse(targetV(:,1), targetV(:,2), targetV(:,3)));
+
+% Display registered image on top of target image
+figure;
+imshowpair(imreg, imtar, 'montage'); title('registered image REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH target image')
+% imshowpair(imreg, imtar);
+
+
+%% Given an image patch in the target image, extract the corresponding patch in the source image 
+
+% Pick image patch in target 
+x = 763; y = 473; w = 25; % Right Shoulder Blade
+
+% Extract Target Patch
+xvals = x - w : x + w;
+yvals = y - w : y + w;
+patch = im_target(yvals, xvals);
+
+% Display Target Image and Target Patch
+h_patches = figure('Name', 'Target Image and Patch', 'units','normalized','outerposition',[0 0 1 1]);
+
+subplot(2,2,1);
+imshow( insertShape(im_target, 'Rectangle', [min(xvals) min(yvals) range(xvals) range(yvals)], 'LineWidth', 5) ); title('Target Image')
+subplot(2,2,2);
+imshow(patch); title('Target Image Patch')
+
+% Find corresponding patch in source image - I don't think this is correct....
+ind = 1:size(registeredV,1);
+ind(registeredV(:,1) < min(xvals)) = inf;
+ind(registeredV(:,1) > max(xvals)) = inf;
+ind(registeredV(:,2) < min(yvals)) = inf;
+ind(registeredV(:,2) > max(yvals)) = inf;
+ind(ind == inf) = []; 
+ps = sourceV(ind,:);
+
+% Extract Source Patch Exactly 
+mask = uint8(zeros(size(im_source)));
+for i = 1:length(ps)
+    p = ps(i,1:2);
+    mask(p(2), p(1)) = 1;
+end
+yrange = min(ps(:,2)):max(ps(:,2));
+xrange = min(ps(:,1)):max(ps(:,1));
+mask = mask .* im_source;
+patch_source = mask(yrange, xrange);
+
+% Plot Source Patch
+subplot(2,2,3);
+imshow( insertShape(im_source, 'Rectangle', [min(xrange) min(yrange) range(xrange) range(yrange)], 'LineWidth', 5) ); title('Source Image')
+subplot(2,2,4);
+imshow(patch_source); title('Source Image Patch')
+
+
+%% Plot 2D vector field difference between source and registered results
+
+x = sourceV(:,1);
+y = sourceV(:,2);
+u = registeredV(:,1) - sourceV(:,1);
+v = registeredV(:,2) - sourceV(:,2);
+
+subs = 200; 
+x = x(1:subs:end);
+y = y(1:subs:end);
+u = u(1:subs:end);
+v = v(1:subs:end);
+
+figure('units','normalized','outerposition',[0 0 0.5 0.5]);
+trisurf(sourceF, sourceV(:,1), sourceV(:,2), sourceV(:,3), 'Edgecolor','none', 'FaceAlpha', 0.25); 
+hold on;
+quiver(x,y,u,v);
+title('X-Y Vector Field from Source to Registered');
+view(0,90)
+
+%% Heatmap of 3D displacement
+
+zdiff = registeredV(:,3) - sourceV(:,3);
+m = full(sparse(sourceV(:,1), sourceV(:,2), zdiff));
+
+figure; imshow( mat2gray(m) );
+title('Intensity denotes the Z-change from source to registration')
+colorbar;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+##### SOURCE END #####
+--></body></html>

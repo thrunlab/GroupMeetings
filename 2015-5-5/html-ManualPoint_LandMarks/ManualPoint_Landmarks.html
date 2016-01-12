@@ -1,0 +1,438 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>ManualPoint_Landmarks</title><meta name="generator" content="MATLAB 8.4"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2015-05-04"><meta name="DC.source" content="ManualPoint_Landmarks.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">Manual Point Correspondence using various points around the image, as well as a user-specified point.</a></li><li><a href="#3">Load source image</a></li><li><a href="#4">Display Images</a></li><li><a href="#5">Detect Head Locations in All Images</a></li><li><a href="#6">Select Points of Interest (POIs)</a></li><li><a href="#8">Match point using L2-norm on patch and relative position to head</a></li><li><a href="#9">Display Images with Top-N matching patches</a></li></ul></div><pre class="codeinput"><span class="comment">%</span>
+</pre><h2>Manual Point Correspondence using various points around the image, as well as a user-specified point.<a name="2"></a></h2><p>Experiment to test if we can manually select one point for correspondence and then find the matching correspondences across a set of images. This is an extension of ManualPoint_TimeLapse which uses not only the patch around the user-specified point, but other areas in the image that are fairly invariant, such as the position of the head or body edges. What we use is left to be explored.</p><p>Steps:   1) Given N images, the user selects a point of interest on 1 image   2) Extract local patch, and some far-away global patches   3) Scan across a candidate image and try to find the M best matching points.   4) Display the M points</p><pre class="codeinput">clc
+clear <span class="string">all</span>
+close <span class="string">all</span>
+</pre><h2>Load source image<a name="3"></a></h2><pre class="codeinput">img_source = <span class="string">'/media/esteva/ExtraDrive1/ThrunResearch/NikonD3Data/4-9-2015/DSC_7971.JPG'</span>; <span class="comment">% Source</span>
+resize = @(x) imresize(x, 0.1);
+rotate90 = @(x) imrotate(x, 90);
+
+<span class="comment">% img_source = imrotate(imresize(imread(img_source), 0.1), 90);</span>
+img_source = rotate90(resize(imread(img_source)));
+
+<span class="comment">% Load target images</span>
+imgs = {
+    <span class="string">'/media/esteva/ExtraDrive1/ThrunResearch/NikonD3Data/4-9-2015/DSC_7983.JPG'</span> <span class="comment">% Target 1</span>
+    <span class="string">'/media/esteva/ExtraDrive1/ThrunResearch/NikonD3Data/4-11-2015/DSC_7987.JPG'</span>
+    <span class="string">'/media/esteva/ExtraDrive1/ThrunResearch/NikonD3Data/4-6-2015/DSC_7947.JPG'</span>
+    <span class="string">'/media/esteva/ExtraDrive1/ThrunResearch/NikonD3Data/4-1-2015/DSC_7899.JPG'</span>
+    <span class="string">'/media/esteva/ExtraDrive1/ThrunResearch/NikonD3Data/4-6-2015/DSC_7946.JPG'</span>
+};
+imgs = cellfun(@imread, imgs, <span class="string">'UniformOutput'</span>, false);
+imgs = cellfun(resize, imgs, <span class="string">'UniformOutput'</span>, false);
+imgs = cellfun(rotate90, imgs, <span class="string">'UniformOutput'</span>, false);
+</pre><h2>Display Images<a name="4"></a></h2><pre class="codeinput">figure;
+imshow(img_source)    <span class="comment">% image number 1</span>
+title(<span class="string">'Source Image'</span>)
+
+<span class="keyword">for</span> m = 1:length(imgs)
+    figure;
+    imshow(imgs{m})
+    title([<span class="string">'Target Image '</span> num2str(m)]);
+
+<span class="keyword">end</span>
+pause(0.5);
+</pre><img vspace="5" hspace="5" src="ManualPoint_Landmarks_01.png" alt=""> <img vspace="5" hspace="5" src="ManualPoint_Landmarks_02.png" alt=""> <img vspace="5" hspace="5" src="ManualPoint_Landmarks_03.png" alt=""> <img vspace="5" hspace="5" src="ManualPoint_Landmarks_04.png" alt=""> <img vspace="5" hspace="5" src="ManualPoint_Landmarks_05.png" alt=""> <img vspace="5" hspace="5" src="ManualPoint_Landmarks_06.png" alt=""> <h2>Detect Head Locations in All Images<a name="5"></a></h2><p>hypothesis: We can use the center of a person's head as a landmark around which to navigate It is relatively invariant to the position of marks on a person's back or front. The challenge will be in arm marks. For this we may need to use a person's shoulder and hands as the landmarks to be used</p><pre class="codeinput">spoi = @(x) selectPointOnImage(x, <span class="string">'Select Center of Head'</span>);
+
+head_source = spoi(img_source);
+head_targets = cellfun(spoi, imgs, <span class="string">'UniformOutput'</span>, false);
+pause(0.3);
+</pre><h2>Select Points of Interest (POIs)<a name="6"></a></h2><pre class="codeinput">points = [
+    175.1870  135.0737  <span class="comment">% Red1</span>
+    141.4311   83.0895  <span class="comment">% Red2</span>
+    95.8605  100.9802   <span class="comment">% Red3</span>
+    210.9683   34.1434  <span class="comment">% Left Elbow</span>
+    214.0063  246.1307  <span class="comment">% Right Elbow</span>
+    ];
+
+<span class="comment">% Manual Selection</span>
+<span class="comment">% point = selectPointOnImage(img_source, 'Source Image: Select point of interest');</span>
+<span class="comment">% pause(0.3);</span>
+
+<span class="keyword">for</span> p = 1:size(points,1)
+</pre><pre class="codeinput">    point = points(p, :);
+</pre><h2>Match point using L2-norm on patch and relative position to head<a name="8"></a></h2><p>the epicenter is the point found by taking the location vector of the source and adding it to the head-center point of the targets the location vector is defined as the vector pointing from the head-center to the POI in the source (Currently only uses L2 norm)</p><pre class="codeinput">    display(<span class="string">'Scanning'</span>);
+
+    <span class="comment">% Get source patch</span>
+    patch_width = 50; <span class="comment">% Make this an even number so that in patch there is a center column/row for flipping later (think of convolutions)</span>
+    patch_height = 50;
+    patch = getPatches(point, patch_width, patch_height, img_source);
+    [patch_height, patch_width,~] = size(patch);
+    imgPt2HmapPt = @(pt) pt - [patch_height/2, patch_width/2];
+
+    <span class="comment">% Grayscale conversion</span>
+    I1 = rgb2gray(img_source);
+    imgs_gray = cellfun(@rgb2gray, imgs, <span class="string">'UniformOutput'</span>, false);
+    patch_gray = rgb2gray(patch);
+
+    <span class="comment">% L2-norm scanning -&gt; Heatmap of most similar patches</span>
+    func = @(X) scan(patch_gray,X);
+    hmaps = cellfun(func, imgs_gray, <span class="string">'UniformOutput'</span>, false);
+
+    <span class="comment">% Constrain Heatmap by regional minima</span>
+    hmaps = cellfun(@constrainHeatmap, hmaps, <span class="string">'UniformOutput'</span>, false);
+
+    <span class="comment">% Regularization: Weight each matched point by its radial distance from the epicenter</span>
+    display(<span class="string">'Regularizing'</span>);
+    findEpicenter = @(head_img) (point - head_source) + head_img;
+    epicenters = cellfun(findEpicenter, head_targets, <span class="string">'UniformOutput'</span>, false);
+
+    hmaps0 = {};
+    <span class="keyword">for</span> i = 1:length(imgs)
+        epicenter = imgPt2HmapPt(epicenters{i});
+        x0 = epicenter(2);
+        y0 = epicenter(1);
+        [ygv, xgv, ~] = size(hmaps{i});
+        [X,Y] = meshgrid(1:xgv, 1:ygv);
+        reg = 1 * ((X-x0).^2 + (Y-y0).^2); <span class="comment">%L2 distance reg</span>
+    <span class="comment">%     reg = 1.0 * (abs(X-x0) + abs(Y-y0)); %L1 distance reg</span>
+        hmaps0{i} = reg + hmaps{i};
+    <span class="keyword">end</span>
+    hmaps = hmaps0;
+
+    <span class="comment">% Calculate matches in ascending order</span>
+    func = @(X) sort(X(:), 1, <span class="string">'ascend'</span>);
+    [l2norms, I] = cellfun(func, hmaps, <span class="string">'UniformOutput'</span>, false);
+
+    display(<span class="string">'Patches Extracted'</span>)
+</pre><pre class="codeoutput">Scanning
+Regularizing
+Patches Extracted
+</pre><pre class="codeoutput">Scanning
+Regularizing
+Patches Extracted
+</pre><pre class="codeoutput">Scanning
+Regularizing
+Patches Extracted
+</pre><pre class="codeoutput">Scanning
+Regularizing
+Patches Extracted
+</pre><pre class="codeoutput">Scanning
+Regularizing
+Patches Extracted
+</pre><h2>Display Images with Top-N matching patches<a name="9"></a></h2><pre class="codeinput">    <span class="comment">% Number of patches to display</span>
+    N=3;
+
+    <span class="comment">% Display Source Image with Desired Patch</span>
+    f = figure;
+    colour = uint8([255 0 0 ]); <span class="comment">% [R G B]; class of colour must match class of I</span>
+    rectangle = int32([point(2:-1:1) - [patch_width/2 patch_height/2], patch_width, patch_height]);
+    shapeInserter = vision.ShapeInserter(<span class="string">'BorderColor'</span>,<span class="string">'Custom'</span>,<span class="string">'CustomBorderColor'</span>,colour);
+    J = step(shapeInserter, img_source, rectangle);
+    imshow(J);
+    title(<span class="string">'Source Image &amp; Desired Point'</span>)
+
+    <span class="comment">% Display Target Images with Top-N Patches</span>
+    numimgs = length(imgs)+1;
+    <span class="keyword">for</span> i = 1:numimgs-1
+
+        <span class="comment">%Overlay Epicenter on copy of img i</span>
+        epicenter = epicenters{i};
+        shapeInserter = vision.ShapeInserter(<span class="string">'Shape'</span>,<span class="string">'Circles'</span>,<span class="string">'BorderColor'</span>,<span class="string">'Custom'</span>,<span class="string">'CustomBorderColor'</span>,uint8([0 0 255]));
+        circ = int32([epicenter(2) epicenter(1) 10]); <span class="comment">%  [x1 y1 radius1]</span>
+        J = step(shapeInserter, imgs{i}, circ);
+
+        <span class="comment">%Overlay Top-N Patches as bounding boxes - cyan is #1, white are the rest</span>
+        <span class="keyword">for</span> j = 1:N
+            <span class="comment">% Extract jth correspondence point</span>
+            pf_hampr= [mod(I{i}(j), size(hmaps{i},1)), floor( I{i}(j) / size(hmaps{i},1) )];
+            pf = round(pf_hampr + size(patch_gray)/2);
+
+            <span class="comment">% First correspondence is cyan, the rest are white</span>
+            <span class="keyword">if</span>(j == 1)
+                colour = uint8([0 255 255]); <span class="comment">% [R G B]; class of colour must match class of I</span>
+            <span class="keyword">else</span>
+                colour = uint8([255 255 255]); <span class="comment">% [R G B]; class of colour must match class of I</span>
+            <span class="keyword">end</span>
+
+            <span class="comment">% Overlay Rectangle of specified color</span>
+            rectangle = int32([pf(2:-1:1) - [patch_width/2 patch_height/2], patch_width, patch_height]);
+            shapeInserter = vision.ShapeInserter(<span class="string">'BorderColor'</span>,<span class="string">'Custom'</span>,<span class="string">'CustomBorderColor'</span>,colour);
+            J = step(shapeInserter, J, rectangle);
+        <span class="keyword">end</span>
+
+        <span class="comment">% Display</span>
+        figure;
+        imshow(J);
+        title([<span class="string">'Target Image '</span> num2str(i) <span class="string">' - Top '</span> num2str(N) <span class="string">' matches'</span>]);
+
+    <span class="keyword">end</span>
+</pre><img vspace="5" hspace="5" src="ManualPoint_Landmarks_07.png" alt=""> <img vspace="5" hspace="5" src="ManualPoint_Landmarks_08.png" alt=""> <img vspace="5" hspace="5" src="ManualPoint_Landmarks_09.png" alt=""> <img vspace="5" hspace="5" src="ManualPoint_Landmarks_10.png" alt=""> <img vspace="5" hspace="5" src="ManualPoint_Landmarks_11.png" alt=""> <img vspace="5" hspace="5" src="ManualPoint_Landmarks_12.png" alt=""> 
+<br><hr><br>
+<img vspace="5" hspace="5" src="ManualPoint_Landmarks_13.png" alt=""> <img vspace="5" hspace="5" src="ManualPoint_Landmarks_14.png" alt=""> <img vspace="5" hspace="5" src="ManualPoint_Landmarks_15.png" alt=""> <img vspace="5" hspace="5" src="ManualPoint_Landmarks_16.png" alt=""> <img vspace="5" hspace="5" src="ManualPoint_Landmarks_17.png" alt=""> <img vspace="5" hspace="5" src="ManualPoint_Landmarks_18.png" alt="">
+<br><hr><br>
+ <img vspace="5" hspace="5" src="ManualPoint_Landmarks_19.png" alt=""> <img vspace="5" hspace="5" src="ManualPoint_Landmarks_20.png" alt=""> <img vspace="5" hspace="5" src="ManualPoint_Landmarks_21.png" alt=""> <img vspace="5" hspace="5" src="ManualPoint_Landmarks_22.png" alt=""> <img vspace="5" hspace="5" src="ManualPoint_Landmarks_23.png" alt=""> <img vspace="5" hspace="5" src="ManualPoint_Landmarks_24.png" alt="">
+<br><hr><br>
+
+ <img vspace="5" hspace="5" src="ManualPoint_Landmarks_25.png" alt=""> <img vspace="5" hspace="5" src="ManualPoint_Landmarks_26.png" alt=""> <img vspace="5" hspace="5" src="ManualPoint_Landmarks_27.png" alt=""> <img vspace="5" hspace="5" src="ManualPoint_Landmarks_28.png" alt=""> <img vspace="5" hspace="5" src="ManualPoint_Landmarks_29.png" alt=""> <img vspace="5" hspace="5" src="ManualPoint_Landmarks_30.png" alt=""> 
+<br><hr><br>
+
+<img vspace="5" hspace="5" src="ManualPoint_Landmarks_31.png" alt=""> <img vspace="5" hspace="5" src="ManualPoint_Landmarks_32.png" alt=""> <img vspace="5" hspace="5" src="ManualPoint_Landmarks_33.png" alt=""> <img vspace="5" hspace="5" src="ManualPoint_Landmarks_34.png" alt=""> <img vspace="5" hspace="5" src="ManualPoint_Landmarks_35.png" alt=""> <img vspace="5" hspace="5" src="ManualPoint_Landmarks_36.png" alt=""> <pre class="codeinput"><span class="keyword">end</span>
+</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2014b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%
+%% Manual Point Correspondence using various points around the image, as well as a user-specified point.
+%
+% Experiment to test if we can manually select one point for correspondence and then find the matching correspondences across a 
+% set of images. This is an extension of ManualPoint_TimeLapse which uses not only the patch around the user-specified point, but other areas 
+% in the image that are fairly invariant, such as the position of the head or body edges. What we use is left to be explored.
+%
+% Steps:
+%   1) Given N images, the user selects a point of interest on 1 image
+%   2) Extract local patch, and some far-away global patches
+%   3) Scan across a candidate image and try to find the M best matching points.
+%   4) Display the M points
+
+clc
+clear all 
+close all
+
+
+%% Load source image
+img_source = '/media/esteva/ExtraDrive1/ThrunResearch/NikonD3Data/4-9-2015/DSC_7971.JPG'; % Source
+resize = @(x) imresize(x, 0.1);
+rotate90 = @(x) imrotate(x, 90);
+
+% img_source = imrotate(imresize(imread(img_source), 0.1), 90);
+img_source = rotate90(resize(imread(img_source)));
+
+% Load target images
+imgs = {
+    '/media/esteva/ExtraDrive1/ThrunResearch/NikonD3Data/4-9-2015/DSC_7983.JPG' % Target 1    
+    '/media/esteva/ExtraDrive1/ThrunResearch/NikonD3Data/4-11-2015/DSC_7987.JPG'
+    '/media/esteva/ExtraDrive1/ThrunResearch/NikonD3Data/4-6-2015/DSC_7947.JPG'
+    '/media/esteva/ExtraDrive1/ThrunResearch/NikonD3Data/4-1-2015/DSC_7899.JPG'
+    '/media/esteva/ExtraDrive1/ThrunResearch/NikonD3Data/4-6-2015/DSC_7946.JPG'
+};
+imgs = cellfun(@imread, imgs, 'UniformOutput', false);
+imgs = cellfun(resize, imgs, 'UniformOutput', false);
+imgs = cellfun(rotate90, imgs, 'UniformOutput', false);
+
+%% Display Images
+
+figure; 
+imshow(img_source)    % image number 1
+title('Source Image')
+
+for m = 1:length(imgs)
+    figure; 
+    imshow(imgs{m})
+    title(['Target Image ' num2str(m)]);
+    
+end
+pause(0.5);
+
+%% Detect Head Locations in All Images
+% hypothesis: We can use the center of a person's head as a landmark around which to navigate
+% It is relatively invariant to the position of marks on a person's back or front. 
+% The challenge will be in arm marks. For this we may need to use a person's shoulder and hands as the landmarks to be used
+
+spoi = @(x) selectPointOnImage(x, 'Select Center of Head');
+
+head_source = spoi(img_source); 
+head_targets = cellfun(spoi, imgs, 'UniformOutput', false);
+pause(0.3);
+
+%% Select Points of Interest (POIs)
+
+points = [
+    175.1870  135.0737  % Red1
+    141.4311   83.0895  % Red2
+    95.8605  100.9802   % Red3
+    210.9683   34.1434  % Left Elbow
+    214.0063  246.1307  % Right Elbow
+    ];
+
+% Manual Selection
+% point = selectPointOnImage(img_source, 'Source Image: Select point of interest');
+% pause(0.3);
+
+for p = 1:size(points,1)
+    point = points(p, :);
+    
+    %% Match point using L2-norm on patch and relative position to head
+    % the epicenter is the point found by taking the location vector of the source and adding it to 
+    % the head-center point of the targets
+    % the location vector is defined as the vector pointing from the head-center to the POI in the source
+    % (Currently only uses L2 norm)
+
+    display('Scanning');
+
+    % Get source patch
+    patch_width = 50; % Make this an even number so that in patch there is a center column/row for flipping later (think of convolutions)
+    patch_height = 50;
+    patch = getPatches(point, patch_width, patch_height, img_source); 
+    [patch_height, patch_width,~] = size(patch);
+    imgPt2HmapPt = @(pt) pt - [patch_height/2, patch_width/2];
+
+    % Grayscale conversion
+    I1 = rgb2gray(img_source);
+    imgs_gray = cellfun(@rgb2gray, imgs, 'UniformOutput', false);
+    patch_gray = rgb2gray(patch);
+
+    % L2-norm scanning -> Heatmap of most similar patches   
+    func = @(X) scan(patch_gray,X);
+    hmaps = cellfun(func, imgs_gray, 'UniformOutput', false);
+
+    % Constrain Heatmap by regional minima
+    hmaps = cellfun(@constrainHeatmap, hmaps, 'UniformOutput', false);
+
+    % Regularization: Weight each matched point by its radial distance from the epicenter
+    display('Regularizing');
+    findEpicenter = @(head_img) (point - head_source) + head_img;
+    epicenters = cellfun(findEpicenter, head_targets, 'UniformOutput', false);
+
+    hmaps0 = {};
+    for i = 1:length(imgs)    
+        epicenter = imgPt2HmapPt(epicenters{i});
+        x0 = epicenter(2);
+        y0 = epicenter(1);
+        [ygv, xgv, ~] = size(hmaps{i});
+        [X,Y] = meshgrid(1:xgv, 1:ygv);
+        reg = 1 * ((X-x0).^2 + (Y-y0).^2); %L2 distance reg
+    %     reg = 1.0 * (abs(X-x0) + abs(Y-y0)); %L1 distance reg
+        hmaps0{i} = reg + hmaps{i};
+    end
+    hmaps = hmaps0;
+
+    % Calculate matches in ascending order
+    func = @(X) sort(X(:), 1, 'ascend');
+    [l2norms, I] = cellfun(func, hmaps, 'UniformOutput', false);    
+
+    display('Patches Extracted')
+
+
+    %% Display Images with Top-N matching patches
+
+    % Number of patches to display
+    N=3;
+
+    % Display Source Image with Desired Patch
+    f = figure; 
+    colour = uint8([255 0 0 ]); % [R G B]; class of colour must match class of I        
+    rectangle = int32([point(2:-1:1) - [patch_width/2 patch_height/2], patch_width, patch_height]);
+    shapeInserter = vision.ShapeInserter('BorderColor','Custom','CustomBorderColor',colour);
+    J = step(shapeInserter, img_source, rectangle);
+    imshow(J); 
+    title('Source Image & Desired Point')
+
+    % Display Target Images with Top-N Patches
+    numimgs = length(imgs)+1;
+    for i = 1:numimgs-1    
+        
+        %Overlay Epicenter on copy of img i
+        epicenter = epicenters{i};    
+        shapeInserter = vision.ShapeInserter('Shape','Circles','BorderColor','Custom','CustomBorderColor',uint8([0 0 255]));
+        circ = int32([epicenter(2) epicenter(1) 10]); %  [x1 y1 radius1]
+        J = step(shapeInserter, imgs{i}, circ);
+
+        %Overlay Top-N Patches as bounding boxes - cyan is #1, white are the rest
+        for j = 1:N
+            % Extract jth correspondence point
+            pf_hampr= [mod(I{i}(j), size(hmaps{i},1)), floor( I{i}(j) / size(hmaps{i},1) )];
+            pf = round(pf_hampr + size(patch_gray)/2);
+
+            % First correspondence is cyan, the rest are white    
+            if(j == 1)
+                colour = uint8([0 255 255]); % [R G B]; class of colour must match class of I        
+            else
+                colour = uint8([255 255 255]); % [R G B]; class of colour must match class of I
+            end
+
+            % Overlay Rectangle of specified color
+            rectangle = int32([pf(2:-1:1) - [patch_width/2 patch_height/2], patch_width, patch_height]);
+            shapeInserter = vision.ShapeInserter('BorderColor','Custom','CustomBorderColor',colour);
+            J = step(shapeInserter, J, rectangle);
+        end
+
+        % Display
+        figure;
+        imshow(J);
+        title(['Target Image ' num2str(i) ' - Top ' num2str(N) ' matches']);
+
+    end
+
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+##### SOURCE END #####
+--></body></html>

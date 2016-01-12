@@ -1,0 +1,393 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>ManualPoint</title><meta name="generator" content="MATLAB 8.4"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2015-04-27"><meta name="DC.source" content="ManualPoint.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#2">Manual Point Correspondence:</a></li><li><a href="#3">Load Images of consideration</a></li><li><a href="#4">Display Images</a></li><li><a href="#5">Get A set of Manual Points of interest (from User)</a></li><li><a href="#6">Extract Patch, find best L2 match</a></li><li><a href="#7">Draw Rectangle around best N matches</a></li><li><a href="#9">Misc code</a></li></ul></div><pre class="codeinput"><span class="comment">%</span>
+</pre><h2>Manual Point Correspondence:<a name="2"></a></h2><p>Experiment to test if we can manually select one point for correspondence and then find the matching correspondences across a set of images.</p><p>Steps:   1) Given N images, the user selects a point of interest on 1 image   2) Extract features (RGB, possibly SIFT, possibly CNN) from a local patch, and from far-away global patches   3) Scan across a candidate image and try to find the M best matching points.   4) Display the M points</p><pre class="codeinput">clc
+clear <span class="string">all</span>
+close <span class="string">all</span>
+</pre><h2>Load Images of consideration<a name="3"></a></h2><pre class="codeinput"><span class="comment">% load images</span>
+im1 = <span class="string">'/media/esteva/ExtraDrive1/ThrunResearch/NikonD3Data/4-9-2015/DSC_7971.JPG'</span>; <span class="comment">% Source</span>
+im2 = <span class="string">'/media/esteva/ExtraDrive1/ThrunResearch/NikonD3Data/4-9-2015/DSC_7983.JPG'</span>; <span class="comment">% Target</span>
+im1 = imresize(imread(im1), 0.1);
+im2 = imresize(imread(im2), 0.1);
+
+img1 = imrotate(im1, 0);
+img2 = imrotate(im2, 0);
+<span class="keyword">if</span> (size(img1) ~= size(img2))
+    disp(<span class="string">'Error: Image size mismatch. Terminating.'</span>)
+    <span class="keyword">return</span>
+<span class="keyword">end</span>
+</pre><h2>Display Images<a name="4"></a></h2><pre class="codeinput">t = 0.4;
+diffPos = [0 0.5 0.5 0.5];
+diffPos2 = [0 0 0.5 0.5];
+APos = [0.5 0.5 0.5 0.5];
+WarpedPos = [0.5 0 0.5 0.5];
+BPos = APos;
+
+f = figure(2);
+imshow(img2)    <span class="comment">% image number 1</span>
+f.set(<span class="string">'units'</span>, <span class="string">'normalized'</span>, <span class="string">'outerposition'</span>, BPos)
+title(<span class="string">'Input Image B - target'</span>)
+pause(t)
+
+f = figure(1);
+imshow(img1)    <span class="comment">% image number 1</span>
+f.set(<span class="string">'units'</span>, <span class="string">'normalized'</span>, <span class="string">'outerposition'</span>, APos)
+title(<span class="string">'Input Image A - source'</span>)
+
+f = figure(3);
+imshowpair(img1,img2)
+f.set(<span class="string">'units'</span>, <span class="string">'normalized'</span>, <span class="string">'outerposition'</span>, diffPos)
+title(<span class="string">'Overlaid Image - Source and Target'</span>)
+pause(t)
+</pre><img vspace="5" hspace="5" src="ManualPoint_01.png" alt=""> <img vspace="5" hspace="5" src="ManualPoint_02.png" alt=""> <img vspace="5" hspace="5" src="ManualPoint_03.png" alt=""> <h2>Get A set of Manual Points of interest (from User)<a name="5"></a></h2><pre class="codeinput">M = 7;
+
+points = zeros(M,2);
+<span class="keyword">for</span> i = 1:M
+    pause(0.1);
+    f = figure(1);
+    imshow(img1);
+    f.set(<span class="string">'units'</span>, <span class="string">'normalized'</span>, <span class="string">'outerposition'</span>, APos);
+    title(<span class="string">'Input Image A'</span>);
+    [dim2_point, dim1_point] = ginput(1);
+    points(i,1:2) = [dim1_point, dim2_point];
+    pause(0.1);
+<span class="keyword">end</span>
+point = points(1,:);
+
+<span class="keyword">for</span> i = 1:M
+</pre><h2>Extract Patch, find best L2 match<a name="6"></a></h2><pre class="codeinput">    point = points(i,:);
+
+    patch_width = 50; <span class="comment">% Make this an even number so that in patch there is a center column/row for flipping later (think of convolutions)</span>
+    patch_height = 50;
+    patch = getPatches(point, patch_width, patch_height, img1); patch = patch{1};
+    [patch_height, patch_width,~] = size(patch);
+<span class="comment">%     figure; imshow(patch); title('patch')</span>
+
+    <span class="comment">% Find best L2 match in target via grayscale</span>
+    I1 = rgb2gray(img1);
+    I2 = rgb2gray(img2);
+    p = rgb2gray(patch);
+
+    display(<span class="string">'Scanning Grayscale'</span>)
+    hmap = scan(p, I2);
+    <span class="comment">% hmap2 = hmap;</span>
+    <span class="comment">% for i = 1:3</span>
+    <span class="comment">%     display(['Scanning RGB-' num2str(i)])</span>
+    <span class="comment">%     hmap2 = hmap2 + scan(patch(:,:,i), img2(:,:,i));</span>
+    <span class="comment">% end</span>
+</pre><pre class="codeoutput">Warning: Integer operands are required for colon operator when used as index 
+Warning: Integer operands are required for colon operator when used as index 
+Scanning Grayscale
+</pre><pre class="codeoutput">Warning: Integer operands are required for colon operator when used as index 
+Warning: Integer operands are required for colon operator when used as index 
+Scanning Grayscale
+</pre><pre class="codeoutput">Warning: Integer operands are required for colon operator when used as index 
+Warning: Integer operands are required for colon operator when used as index 
+Scanning Grayscale
+</pre><pre class="codeoutput">Warning: Integer operands are required for colon operator when used as index 
+Warning: Integer operands are required for colon operator when used as index 
+Scanning Grayscale
+</pre><pre class="codeoutput">Warning: Integer operands are required for colon operator when used as index 
+Warning: Integer operands are required for colon operator when used as index 
+Scanning Grayscale
+</pre><pre class="codeoutput">Warning: Integer operands are required for colon operator when used as index 
+Warning: Integer operands are required for colon operator when used as index 
+Scanning Grayscale
+</pre><pre class="codeoutput">Warning: Integer operands are required for colon operator when used as index 
+Warning: Integer operands are required for colon operator when used as index 
+Scanning Grayscale
+</pre><h2>Draw Rectangle around best N matches<a name="7"></a></h2><pre class="codeinput">    <span class="comment">% Calculate matches in ascending order</span>
+    hmapr = (hmap + eps) .* imregionalmin(hmap);
+    hmapr(hmapr == 0) = max(hmapr(:));
+    <span class="comment">% hmapr = hmap;</span>
+
+    [l2norms, I] = sort(hmapr(:), 1, <span class="string">'ascend'</span>);
+
+    <span class="comment">% Draw N cyan boxes on image</span>
+    N = 4;
+
+    J = img2;
+    topNpatches = {};
+    <span class="keyword">for</span> j = 1:N
+        <span class="comment">% Convert heatmap index to points on images</span>
+        point_found_hmapr = [mod(I(j), size(hmap,1)), floor( I(j) / size(hmap,1) )];
+        point_found = point_found_hmapr + size(p)/2;
+
+        <span class="comment">% Patch found</span>
+        topNpatches(end+1) = getPatches(point_found, patch_width, patch_height, img2);
+
+        <span class="comment">% First correspondence is cyan, the rest are white</span>
+        <span class="keyword">if</span>(j == 1)
+            colour = uint8([0 255 255]); <span class="comment">% [R G B]; class of colour must match class of I</span>
+        <span class="keyword">else</span>
+            colour = uint8([255 255 255]); <span class="comment">% [R G B]; class of colour must match class of I</span>
+        <span class="keyword">end</span>
+
+        <span class="comment">% Overlay Rectangle of specified color</span>
+        rectangle = int32([point_found(2:-1:1) - [patch_width/2 patch_height/2], patch_width, patch_height]);
+        shapeInserter = vision.ShapeInserter(<span class="string">'BorderColor'</span>,<span class="string">'Custom'</span>,<span class="string">'CustomBorderColor'</span>,colour);
+        J = step(shapeInserter, J, rectangle);
+    <span class="keyword">end</span>
+    figure; imshow(J);
+    title([<span class="string">'Top '</span> num2str(N) <span class="string">' correspondence boxes'</span>])
+
+    <span class="comment">% Show Top Match</span>
+    new_patch = topNpatches{1};
+    figure;
+    subplot(1,2,1); imshow(new_patch);
+    title(<span class="string">'Matched'</span>);
+    subplot(1,2,2); imshow(patch);
+    title(<span class="string">'Original'</span>)
+</pre><img vspace="5" hspace="5" src="ManualPoint_04.png" alt=""> <img vspace="5" hspace="5" src="ManualPoint_05.png" alt=""> <img vspace="5" hspace="5" src="ManualPoint_06.png" alt=""> <img vspace="5" hspace="5" src="ManualPoint_07.png" alt=""> <img vspace="5" hspace="5" src="ManualPoint_08.png" alt=""> <img vspace="5" hspace="5" src="ManualPoint_09.png" alt=""> <img vspace="5" hspace="5" src="ManualPoint_10.png" alt=""> <img vspace="5" hspace="5" src="ManualPoint_11.png" alt=""> <img vspace="5" hspace="5" src="ManualPoint_12.png" alt=""> <img vspace="5" hspace="5" src="ManualPoint_13.png" alt=""> <img vspace="5" hspace="5" src="ManualPoint_14.png" alt=""> <img vspace="5" hspace="5" src="ManualPoint_15.png" alt=""> <img vspace="5" hspace="5" src="ManualPoint_16.png" alt=""> <img vspace="5" hspace="5" src="ManualPoint_17.png" alt=""> <pre class="codeinput"><span class="keyword">end</span>
+</pre><h2>Misc code<a name="9"></a></h2><pre class="codeinput"><span class="comment">% Computes i,j of maximum of matrix hmap</span>
+<span class="comment">% [~,i] = max(hmap);</span>
+<span class="comment">% [m, j] = max(max(hmap));</span>
+<span class="comment">% i = i(j);</span>
+</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2014b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%
+%% Manual Point Correspondence:
+%
+% Experiment to test if we can manually select one point for correspondence and then find the matching correspondences across a 
+% set of images. 
+%
+% Steps:
+%   1) Given N images, the user selects a point of interest on 1 image
+%   2) Extract features (RGB, possibly SIFT, possibly CNN) from a local patch, and from far-away global patches
+%   3) Scan across a candidate image and try to find the M best matching points.
+%   4) Display the M points
+
+clc
+clear all 
+close all
+
+%% Load Images of consideration
+
+% load images
+im1 = '/media/esteva/ExtraDrive1/ThrunResearch/NikonD3Data/4-9-2015/DSC_7971.JPG'; % Source
+im2 = '/media/esteva/ExtraDrive1/ThrunResearch/NikonD3Data/4-9-2015/DSC_7983.JPG'; % Target
+im1 = imresize(imread(im1), 0.1);
+im2 = imresize(imread(im2), 0.1);
+
+img1 = imrotate(im1, 0);
+img2 = imrotate(im2, 0);
+if (size(img1) ~= size(img2))
+    disp('Error: Image size mismatch. Terminating.')
+    return
+end
+
+%% Display Images
+t = 0.4;
+diffPos = [0 0.5 0.5 0.5];
+diffPos2 = [0 0 0.5 0.5];
+APos = [0.5 0.5 0.5 0.5];
+WarpedPos = [0.5 0 0.5 0.5];
+BPos = APos;
+
+f = figure(2);
+imshow(img2)    % image number 1
+f.set('units', 'normalized', 'outerposition', BPos)
+title('Input Image B - target')
+pause(t)
+
+f = figure(1);
+imshow(img1)    % image number 1
+f.set('units', 'normalized', 'outerposition', APos)
+title('Input Image A - source')
+
+f = figure(3);
+imshowpair(img1,img2)
+f.set('units', 'normalized', 'outerposition', diffPos)
+title('Overlaid Image - Source and Target')
+pause(t)
+
+%% Get A set of Manual Points of interest (from User)
+M = 7;
+
+points = zeros(M,2);
+for i = 1:M
+    pause(0.1);
+    f = figure(1);
+    imshow(img1);
+    f.set('units', 'normalized', 'outerposition', APos);
+    title('Input Image A');
+    [dim2_point, dim1_point] = ginput(1);    
+    points(i,1:2) = [dim1_point, dim2_point];
+    pause(0.1);    
+end
+point = points(1,:);
+    
+for i = 1:M
+    %% Extract Patch, find best L2 match
+    point = points(i,:);
+    
+    patch_width = 50; % Make this an even number so that in patch there is a center column/row for flipping later (think of convolutions)
+    patch_height = 50;
+    patch = getPatches(point, patch_width, patch_height, img1); patch = patch{1};
+    [patch_height, patch_width,~] = size(patch);
+%     figure; imshow(patch); title('patch')
+
+    % Find best L2 match in target via grayscale 
+    I1 = rgb2gray(img1);
+    I2 = rgb2gray(img2);
+    p = rgb2gray(patch);
+
+    display('Scanning Grayscale')
+    hmap = scan(p, I2);
+    % hmap2 = hmap;
+    % for i = 1:3
+    %     display(['Scanning RGB-' num2str(i)])
+    %     hmap2 = hmap2 + scan(patch(:,:,i), img2(:,:,i));
+    % end
+
+    %% Draw Rectangle around best N matches
+
+    % Calculate matches in ascending order
+    hmapr = (hmap + eps) .* imregionalmin(hmap);
+    hmapr(hmapr == 0) = max(hmapr(:));
+    % hmapr = hmap;
+
+    [l2norms, I] = sort(hmapr(:), 1, 'ascend');
+
+    % Draw N cyan boxes on image
+    N = 4;
+
+    J = img2;
+    topNpatches = {};
+    for j = 1:N
+        % Convert heatmap index to points on images
+        point_found_hmapr = [mod(I(j), size(hmap,1)), floor( I(j) / size(hmap,1) )];
+        point_found = point_found_hmapr + size(p)/2;
+
+        % Patch found    
+        topNpatches(end+1) = getPatches(point_found, patch_width, patch_height, img2); 
+
+        % First correspondence is cyan, the rest are white    
+        if(j == 1)
+            colour = uint8([0 255 255]); % [R G B]; class of colour must match class of I        
+        else
+            colour = uint8([255 255 255]); % [R G B]; class of colour must match class of I
+        end
+
+        % Overlay Rectangle of specified color
+        rectangle = int32([point_found(2:-1:1) - [patch_width/2 patch_height/2], patch_width, patch_height]);
+        shapeInserter = vision.ShapeInserter('BorderColor','Custom','CustomBorderColor',colour);
+        J = step(shapeInserter, J, rectangle);
+    end
+    figure; imshow(J);
+    title(['Top ' num2str(N) ' correspondence boxes'])
+
+    % Show Top Match
+    new_patch = topNpatches{1};
+    figure; 
+    subplot(1,2,1); imshow(new_patch);
+    title('Matched');
+    subplot(1,2,2); imshow(patch);
+    title('Original')
+end
+
+%% Misc code
+
+% Computes i,j of maximum of matrix hmap
+% [~,i] = max(hmap);
+% [m, j] = max(max(hmap));
+% i = i(j);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+##### SOURCE END #####
+--></body></html>

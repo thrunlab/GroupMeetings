@@ -1,0 +1,268 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>DrawingBoard</title><meta name="generator" content="MATLAB 8.4"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2015-04-13"><meta name="DC.source" content="DrawingBoard.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">Spring-Mass Alignment using Manual, SIFT, &amp; Harris Features</a></li><li><a href="#2">=============================== Coarse Grid ===============================</a></li><li><a href="#3">Raw Overlay</a></li><li><a href="#4">Manual - 25 pts</a></li><li><a href="#5">Manual - 50 pts</a></li><li><a href="#6">Sift</a></li><li><a href="#7">Harris</a></li><li><a href="#8">Manual, Sift, &amp; Harris</a></li><li><a href="#9">=============================== Fine Grid ===============================</a></li><li><a href="#10">Manual, Sift, &amp; Harris - Fine Grid</a></li><li><a href="#11">Sift &amp; Harris - Fine Grid</a></li></ul></div><h2>Spring-Mass Alignment using Manual, SIFT, &amp; Harris Features<a name="1"></a></h2><pre class="codeinput">left= [0 0 0.4 0.5];
+right= [0.5 0 0.4 0.5];
+
+im1 = <span class="string">'/media/esteva/ExtraDrive1/ThrunResearch/NikonD3Data/4-9-2015/DSC_7971.JPG'</span>;
+im2 = <span class="string">'/media/esteva/ExtraDrive1/ThrunResearch/NikonD3Data/4-9-2015/DSC_7983.JPG'</span>;
+im1 = imresize(imread(im1), 0.5);
+im2 = imresize(imread(im2), 0.5);
+img1 = imrotate(im1, 0);
+img2 = imrotate(im2, 0);
+</pre><h2>=============================== Coarse Grid ===============================<a name="2"></a></h2><h2>Raw Overlay<a name="3"></a></h2><pre class="codeinput">f = hgload(<span class="string">'Overlay'</span>);
+f.set(<span class="string">'units'</span>, <span class="string">'normalized'</span>, <span class="string">'outerposition'</span>, left);
+</pre><img vspace="5" hspace="5" src="DrawingBoard_01.png" alt=""> <h2>Manual - 25 pts<a name="4"></a></h2><pre class="codeinput">f = hgload(<span class="string">'Overlay'</span>);
+f.set(<span class="string">'units'</span>, <span class="string">'normalized'</span>, <span class="string">'outerposition'</span>, left);
+f = hgload(<span class="string">'Overlay_Manual25'</span>);
+f.set(<span class="string">'units'</span>, <span class="string">'normalized'</span>, <span class="string">'outerposition'</span>, right);
+</pre><img vspace="5" hspace="5" src="DrawingBoard_02.png" alt=""> <img vspace="5" hspace="5" src="DrawingBoard_03.png" alt=""> <h2>Manual - 50 pts<a name="5"></a></h2><pre class="codeinput">f = hgload(<span class="string">'Overlay'</span>);
+f.set(<span class="string">'units'</span>, <span class="string">'normalized'</span>, <span class="string">'outerposition'</span>, left);
+f = hgload(<span class="string">'Overlay_Manual50'</span>);
+f.set(<span class="string">'units'</span>, <span class="string">'normalized'</span>, <span class="string">'outerposition'</span>, right);
+</pre><img vspace="5" hspace="5" src="DrawingBoard_04.png" alt=""> <img vspace="5" hspace="5" src="DrawingBoard_05.png" alt=""> <h2>Sift<a name="6"></a></h2><pre class="codeinput">f = hgload(<span class="string">'Overlay'</span>);
+f.set(<span class="string">'units'</span>, <span class="string">'normalized'</span>, <span class="string">'outerposition'</span>, left);
+f = hgload(<span class="string">'Overlay_sift'</span>);
+f.set(<span class="string">'units'</span>, <span class="string">'normalized'</span>, <span class="string">'outerposition'</span>, right);
+</pre><img vspace="5" hspace="5" src="DrawingBoard_06.png" alt=""> <img vspace="5" hspace="5" src="DrawingBoard_07.png" alt=""> <h2>Harris<a name="7"></a></h2><pre class="codeinput">f = hgload(<span class="string">'Overlay'</span>);
+f.set(<span class="string">'units'</span>, <span class="string">'normalized'</span>, <span class="string">'outerposition'</span>, left);
+f = hgload(<span class="string">'Overlay_Harris'</span>);
+f.set(<span class="string">'units'</span>, <span class="string">'normalized'</span>, <span class="string">'outerposition'</span>, right);
+</pre><img vspace="5" hspace="5" src="DrawingBoard_08.png" alt=""> <img vspace="5" hspace="5" src="DrawingBoard_09.png" alt=""> <h2>Manual, Sift, &amp; Harris<a name="8"></a></h2><pre class="codeinput">f = hgload(<span class="string">'Overlay'</span>);
+f.set(<span class="string">'units'</span>, <span class="string">'normalized'</span>, <span class="string">'outerposition'</span>, left);
+f = hgload(<span class="string">'Overlay_Manual50_sift_harris'</span>);
+f.set(<span class="string">'units'</span>, <span class="string">'normalized'</span>, <span class="string">'outerposition'</span>, right);
+</pre><img vspace="5" hspace="5" src="DrawingBoard_10.png" alt=""> <img vspace="5" hspace="5" src="DrawingBoard_11.png" alt=""> <h2>=============================== Fine Grid ===============================<a name="9"></a></h2><h2>Manual, Sift, &amp; Harris - Fine Grid<a name="10"></a></h2><pre class="codeinput">f = hgload(<span class="string">'Overlay'</span>);
+f.set(<span class="string">'units'</span>, <span class="string">'normalized'</span>, <span class="string">'outerposition'</span>, left);
+f = hgload(<span class="string">'Overlay_Manual50_sift_harris_grid=fine'</span>);
+f.set(<span class="string">'units'</span>, <span class="string">'normalized'</span>, <span class="string">'outerposition'</span>, right);
+
+<span class="comment">% Display Random Patches</span>
+load(<span class="string">'Img1New_50pts_harris_sift_grid=fine'</span>, <span class="string">'img1new'</span>); <span class="comment">% loads 'img1new'</span>
+
+bottomright = [0.5 0 0.4 0.4];
+bottomleft = [0 0 0.4 0.4];
+<span class="keyword">for</span> i = 1:4
+    f = displayRandomPatch(img2,img1,img1new);
+    <span class="keyword">if</span>(mod(i,2) == 0)
+        f.set(<span class="string">'units'</span>, <span class="string">'normalized'</span>, <span class="string">'outerposition'</span>, bottomright);
+    <span class="keyword">else</span>
+        f.set(<span class="string">'units'</span>, <span class="string">'normalized'</span>, <span class="string">'outerposition'</span>, bottomleft);
+    <span class="keyword">end</span>
+
+<span class="keyword">end</span>
+
+<span class="comment">% Display Random Patches - Overlaid</span>
+
+<span class="keyword">for</span> i = 1:4
+    f = displayRandomPatch_overlaid(img2,img1,img1new);
+    f.set(<span class="string">'units'</span>, <span class="string">'normalized'</span>, <span class="string">'outerposition'</span>, bottomright);
+
+<span class="keyword">end</span>
+</pre><img vspace="5" hspace="5" src="DrawingBoard_12.png" alt=""> <img vspace="5" hspace="5" src="DrawingBoard_13.png" alt=""> <img vspace="5" hspace="5" src="DrawingBoard_14.png" alt=""> <img vspace="5" hspace="5" src="DrawingBoard_15.png" alt=""> <img vspace="5" hspace="5" src="DrawingBoard_16.png" alt=""> <img vspace="5" hspace="5" src="DrawingBoard_17.png" alt=""> <img vspace="5" hspace="5" src="DrawingBoard_18.png" alt=""> <img vspace="5" hspace="5" src="DrawingBoard_19.png" alt=""> <img vspace="5" hspace="5" src="DrawingBoard_20.png" alt=""> <img vspace="5" hspace="5" src="DrawingBoard_21.png" alt=""> <h2>Sift &amp; Harris - Fine Grid<a name="11"></a></h2><pre class="codeinput">f = hgload(<span class="string">'Overlay'</span>);
+f.set(<span class="string">'units'</span>, <span class="string">'normalized'</span>, <span class="string">'outerposition'</span>, left);
+f = hgload(<span class="string">'Overlay_sift_harris_grid=fine'</span>);
+f.set(<span class="string">'units'</span>, <span class="string">'normalized'</span>, <span class="string">'outerposition'</span>, right);
+
+<span class="comment">% Display Random Patches</span>
+load(<span class="string">'Img1New_harris_sift_grid=fine'</span>, <span class="string">'img1new'</span>); <span class="comment">% loads 'img1new'</span>
+
+bottomright = [0.5 0 0.4 0.4];
+bottomleft = [0 0 0.4 0.4];
+<span class="keyword">for</span> i = 1:4
+    f = displayRandomPatch(img2,img1,img1new);
+    <span class="keyword">if</span>(mod(i,2) == 0)
+        f.set(<span class="string">'units'</span>, <span class="string">'normalized'</span>, <span class="string">'outerposition'</span>, bottomright);
+    <span class="keyword">else</span>
+        f.set(<span class="string">'units'</span>, <span class="string">'normalized'</span>, <span class="string">'outerposition'</span>, bottomleft);
+    <span class="keyword">end</span>
+
+<span class="keyword">end</span>
+
+<span class="comment">% Display Random Patches - Overlaid</span>
+
+<span class="keyword">for</span> i = 1:4
+    f = displayRandomPatch_overlaid(img2,img1,img1new);
+    f.set(<span class="string">'units'</span>, <span class="string">'normalized'</span>, <span class="string">'outerposition'</span>, bottomright);
+
+<span class="keyword">end</span>
+</pre><img vspace="5" hspace="5" src="DrawingBoard_22.png" alt=""> <img vspace="5" hspace="5" src="DrawingBoard_23.png" alt=""> <img vspace="5" hspace="5" src="DrawingBoard_24.png" alt=""> <img vspace="5" hspace="5" src="DrawingBoard_25.png" alt=""> <img vspace="5" hspace="5" src="DrawingBoard_26.png" alt=""> <img vspace="5" hspace="5" src="DrawingBoard_27.png" alt=""> <img vspace="5" hspace="5" src="DrawingBoard_28.png" alt=""> <img vspace="5" hspace="5" src="DrawingBoard_29.png" alt=""> <img vspace="5" hspace="5" src="DrawingBoard_30.png" alt=""> <img vspace="5" hspace="5" src="DrawingBoard_31.png" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2014b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Spring-Mass Alignment using Manual, SIFT, & Harris Features
+
+left= [0 0 0.4 0.5];
+right= [0.5 0 0.4 0.5];
+
+im1 = '/media/esteva/ExtraDrive1/ThrunResearch/NikonD3Data/4-9-2015/DSC_7971.JPG';
+im2 = '/media/esteva/ExtraDrive1/ThrunResearch/NikonD3Data/4-9-2015/DSC_7983.JPG';
+im1 = imresize(imread(im1), 0.5);
+im2 = imresize(imread(im2), 0.5);
+img1 = imrotate(im1, 0);
+img2 = imrotate(im2, 0);
+
+%% =============================== Coarse Grid =============================== 
+
+%% Raw Overlay
+f = hgload('Overlay');
+f.set('units', 'normalized', 'outerposition', left);
+
+%% Manual - 25 pts
+f = hgload('Overlay');
+f.set('units', 'normalized', 'outerposition', left);
+f = hgload('Overlay_Manual25');
+f.set('units', 'normalized', 'outerposition', right);
+
+%% Manual - 50 pts
+f = hgload('Overlay');
+f.set('units', 'normalized', 'outerposition', left);
+f = hgload('Overlay_Manual50');
+f.set('units', 'normalized', 'outerposition', right);
+
+%% Sift
+f = hgload('Overlay');
+f.set('units', 'normalized', 'outerposition', left);
+f = hgload('Overlay_sift');
+f.set('units', 'normalized', 'outerposition', right);
+
+%% Harris
+f = hgload('Overlay');
+f.set('units', 'normalized', 'outerposition', left);
+f = hgload('Overlay_Harris');
+f.set('units', 'normalized', 'outerposition', right);
+
+%% Manual, Sift, & Harris
+f = hgload('Overlay');
+f.set('units', 'normalized', 'outerposition', left);
+f = hgload('Overlay_Manual50_sift_harris');
+f.set('units', 'normalized', 'outerposition', right);
+
+
+%% =============================== Fine Grid =============================== 
+
+%% Manual, Sift, & Harris - Fine Grid
+f = hgload('Overlay');
+f.set('units', 'normalized', 'outerposition', left);
+f = hgload('Overlay_Manual50_sift_harris_grid=fine');
+f.set('units', 'normalized', 'outerposition', right);
+
+% Display Random Patches
+load('Img1New_50pts_harris_sift_grid=fine', 'img1new'); % loads 'img1new'
+
+bottomright = [0.5 0 0.4 0.4];
+bottomleft = [0 0 0.4 0.4];
+for i = 1:4
+    f = displayRandomPatch(img2,img1,img1new);
+    if(mod(i,2) == 0)
+        f.set('units', 'normalized', 'outerposition', bottomright);
+    else
+        f.set('units', 'normalized', 'outerposition', bottomleft);
+    end
+    
+end
+
+% Display Random Patches - Overlaid
+
+for i = 1:4
+    f = displayRandomPatch_overlaid(img2,img1,img1new);
+    f.set('units', 'normalized', 'outerposition', bottomright);
+    
+end
+
+%% Sift & Harris - Fine Grid
+f = hgload('Overlay');
+f.set('units', 'normalized', 'outerposition', left);
+f = hgload('Overlay_sift_harris_grid=fine');
+f.set('units', 'normalized', 'outerposition', right);
+
+% Display Random Patches
+load('Img1New_harris_sift_grid=fine', 'img1new'); % loads 'img1new'
+
+bottomright = [0.5 0 0.4 0.4];
+bottomleft = [0 0 0.4 0.4];
+for i = 1:4
+    f = displayRandomPatch(img2,img1,img1new);
+    if(mod(i,2) == 0)
+        f.set('units', 'normalized', 'outerposition', bottomright);
+    else
+        f.set('units', 'normalized', 'outerposition', bottomleft);
+    end
+    
+end
+
+% Display Random Patches - Overlaid
+
+for i = 1:4
+    f = displayRandomPatch_overlaid(img2,img1,img1new);
+    f.set('units', 'normalized', 'outerposition', bottomright);
+    
+end
+
+
+
+##### SOURCE END #####
+--></body></html>

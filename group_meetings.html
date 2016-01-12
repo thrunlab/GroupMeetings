@@ -1,0 +1,791 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Thrun GM</title>
+    <link href='http://fonts.googleapis.com/css?family=Ubuntu:400,500,300' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <!-- <link rel="stylesheet" href="assets/css/standroid.css"> -->
+</head>
+<body>
+
+<h1 align = "middle">Skin Project - Group Meeting Updates</h1>
+
+<!-- <hr  style="height:3px;border:none;color:#333;background-color:#333;" /> -->
+<!-- <h2><u> Dashboard </u></h2>
+Current accuracies and metrics. <br>
+<img src="2015-11-10/9way.png", height=300>
+<img src="2015-11-10/pigmented.png", height=300>
+<img src="2015-11-10/epidermal.png", height=300> -->
+
+<!-- ------------------------------------------------------------------------------------------------>
+<hr  style="height:3px;border:none;color:#333;background-color:#333;" />
+<h2><u> December 15, 2015 </u></h2>
+
+<h3> App Updates </h3>
+<ul>
+	<li> Derm app made following tensorflow's demo. </li>
+	<li> Waiting for Dustan on the UI - latest app release has a bug </li>
+</ul>
+
+<h3> Testing Dermatologists </h3>
+<ul>
+	<li> Built Web app for pigmented lesions test:
+	 <a href="http://stanford.edu/~esteva/dermtest_pigmented" target="_blank">
+	 http://stanford.edu/~esteva/dermtest_pigmented </a>
+	</li>
+	<li> Flask App on AWS with Elastic Beanstalk: elastically scalable, auto-load balancing, etc etc. For future know-how in web-dev. </li>
+	<li> Test is 100 questions (50 per class)</li>
+	<li> One image taken from unique dermquest ids, up to 50 case ids.</li>
+	<li> 
+		<img src="2015-12-15/pigmentedSS.png" height=300>
+	</li>
+</ul>
+
+<h3> Forbes Conference Debrief </h3>
+<ul>
+	<li>Michelle - CEO of Medable - Plot SS of Melanoma vs Nevi+Seborhheic Keratosis (below)</li>
+	<li>IBM Watson - can become an ecosystem partner and use their data </li>
+	<li>Houston VC wants to invest.</li>
+</ul>
+
+<h3> Other </h3>
+<ul>
+	<li> Hiring Updates: 34 Applicants - 10 Interviewees - Top: Austin, Raunak, Hussain (3 more this week)</li>
+	<li> <strong> SkinVision wants to partner with us as researchers </strong> </li>
+
+</ul>
+
+<!-- ------------------------------------------------------------------------------------------------>
+<hr  style="height:3px;border:none;color:#333;background-color:#333;" />
+<h2><u> December 1, 2015 </u></h2>
+
+<h3> Data </h3>
+<ul>
+	<li> Skindata3 - 111k Strong + Weakly labeled images
+
+		cutaneous-lymphoma 1006
+		<br>
+		dermal-tumor-benign 7920
+		<br>
+		dermal-tumor-malignant 914
+		<br>
+		epidermal-tumor-benign 5119
+		<br>
+		epidermal-tumor-malignant 11111
+		<br>
+		genodermatosis 4596
+		<br>
+		inflammatory 81533
+		<br>
+		pigmented-lesion-benign 3130
+		<br>
+		pigmented-lesion-malignant 2825
+		<br>
+
+	</li>
+
+</ul>
+
+<h3> Accuracies </h3>
+<ul>
+	<li> Baseline (9-way - skinprob=0.4) = 48.1% </li>
+	<img src="2015-12-01/accs.png" height=300>
+	<img src="2015-12-01/pigmentedSS.png" height=300>
+	<img src="2015-12-01/epidermalSS.png" height=300>
+	<img src="2015-12-01/melanomasVSnevi+epidermal-benign.png" height=300>
+</ul>
+
+<h3> Other </h3>
+<ul>
+	<li> Web App Complete. </li>
+	<li> AWS Account Created. </li>
+	<li> Recruitment Email Sent - How do you select MS/undergrads? </li>
+</ul>
+
+<!-- ------------------------------------------------------- November 24 ------------------------------------------>
+<hr  style="height:3px;border:none;color:#333;background-color:#333;" />
+<h2><u> November 24, 2015 </u></h2>
+
+<h3> New Metrics </h3>
+<ul>
+	<li> 6-way classification: lumping dermal+epidermal, inflammatory + genodermatosis <br>
+		<img src="2015-11-24/6way.png" height=200>
+		<img src="2015-11-24/pigmentedSS.png" height=200>
+		<img src="2015-11-24/nonpigmentedSS.png" height=200>
+		<br>
+		Non-pigmented: For a sensitivity of 0.98 the specificity is 0.49333333333 <br>
+		Pigmented: For a sensitivity of 0.98 the specificity is 0.3 <br>
+		Jarvis: 54.4%, Justin/Rob: 64%
+	 </li>
+	<li> Synset: <br>
+		0: cutaneous-lymphoma <br>
+		1: inflammatory-and-genetic-conditions <br>
+		2: non-pigmented-tumor-benign <br>
+		3: non-pigmented-tumor-malignant <br>
+		4: pigmented-lesion-benign <br>
+		5: pigmented-lesion-malignant <br>
+	</li>
+</ul>
+
+<h3> Progress </h3>
+<ul>
+	<li> On 'sprint 2' of the Udacity app </li>
+	<li> More trainable data by Friday </li>
+	<li> Building web app for testing dermatologists more quickly </li>
+</ul>
+
+<h3> Next: </h3>
+<ul>
+	<li> <strong> ?: Hire a mobile guy </strong> </li>
+	<li> Parse incorporation docs </li>
+	<li> Poll our customers - what do they want in an app? </li>
+	<li> <strong> ?: Considering a new taxonomy: http://id.who.int/icd/entity/1639304259 </strong> </li>
+</ul>
+
+
+<!-- ------------------------------------------------------- November 10 ------------------------------------------>
+<hr  style="height:3px;border:none;color:#333;background-color:#333;" />
+<h2><u> November 10, 2015 </u></h2>
+
+<h3> Data Collection </h3>
+<ul>
+	<li> New Dataset: SKINDATA2 ~ 80k images</li>
+	<li> More sources coming from: spanish website, melanomas in mice! </li>
+</ul>
+
+<h3> Accuracies </h3>
+<ul>
+	<li> GoogleNet baseline on SKINDATA2 (Dermquest IDs + leafnodes - trained on 9-way) achieves <strong>45% accuracy peak, 41% average</strong></li>
+	<li> Pigmented Lesions: For a sensitivity of 0.98 the specificity is 0.39 </li>
+	<li> Epidermal Lesions: For a sensitivity of 0.90 the specificity is 0.70 </li>
+	<li> <img src="2015-11-10/9way.png", height=300>
+		 <img src="2015-11-10/pigmented.png", height=300>
+		 <img src="2015-11-10/epidermal.png", height=300>
+	</li>
+	<li>
+		0	cutaneous-lymphoma <br>
+		1	dermal-tumor-benign <br>
+		2	dermal-tumor-malignant <br>
+		3	epidermal-tumor-benign <br>
+		4	epidermal-tumor-malignant <br>
+		5	genodermatosis <br>
+		6	inflammatory <br>
+		7	pigmented-lesion-benign <br>
+		8	pigmented-lesion-malignant <br>
+	</li>
+</ul>
+
+<h3> Tech </h3>
+<ul>
+	<li> App outsourced to Udacity nanodegree students. </li>
+</ul>
+
+
+<!-- ------------------------------------------------------- October 27 ------------------------------------------>
+<hr  style="height:3px;border:none;color:#333;background-color:#333;" />
+<h2><u> October 27, 2015 </u></h2>
+
+<h3> Data Collection </h3>
+<ul>
+	<li> Downloaded <a href="http://www.dermaamin.com/site/" target="_blank"> dermaamin </a>  (27k images) </li>
+	<li> New dataset size estimate 78k-100k</li>
+</ul>
+
+<h3> Increasing Accuracies </h3>
+<ul>
+	<li> Heavy Data Augmentation (enhancement factor of 3600) provides almost no boost over 40x enhancement. </li>
+	<li> Implemented retrieval to verify that the SS curves of pigmented lesions and epidermal lesions are valid. <br>
+		<!-- <img src="2015-10-27/retrieval.png", height=300> -->
+	</li>
+</ul>
+
+<h3> Legal </h3>
+<ul>
+	<li> Chat with Fenwick: can ignore OTL for now because...<br>
+		<ol>
+			<li> Data: Is ours to keep (not to mention open-source) </li>
+			<li> Algorithms: We publish. Will server as medical validation. </li>
+			<li> App / Tech: OTL Keeps. Which is fine.
+				We spin out when it comes time to code the deployable consumer product.
+				Everything else is a prototyping experiment. </li>
+		</ol>
+	</li>
+
+</ul>
+
+<!-- ------------------------------------------------------- October 20 ------------------------------------------>
+<hr  style="height:3px;border:none;color:#333;background-color:#333;" />
+<h2><u> October 20, 2015 </u></h2>
+
+<h3> Data Collection </h3>
+<ul>
+	<li> 168k Raw Downloads from Google Image Search using the taxonomy's leaf nodes as queries. </li>
+	<li> Estimated 50k-100k are skin lesions -using binary lesion/not-lesion classifier</li>
+	<li> Next Step:Scrape Common Domains found </li>
+</ul>
+
+<h3> Increasing Accuracies</h3>
+<ul>
+	<li> Classifier Pipeline Refactoring for additional functionality: Data Augmentation, Sliding-Window Classifier </li>
+	<li> New Metrics for Accuracies:
+		<ol>
+			<li> Pigmented Lesion SS Curve (melanoma vs nevi)
+			 </li>
+			<li> Epidermal Lesion SS Curve (basal-cell-caricinoma vs look-alike) </li>
+			<li> Pigmented Lesion SS Curve (squamous-cell-carcinoma vs look-alike) (possibly combined with basal?) </li>
+			<li> General Classification Accuracy of Relevant Categories (between 4-9, TBD) <br>
+				VGG + TreeLearning Achieves <strong> 40% on 9-way classification. </strong>
+			</li>
+		</ol>
+	</li>
+</ul>
+
+<h3> Results </h3>
+<ul>
+	<li> Pigmented Lesion SS Curve <br>
+		<img src="2015-10-20/pigmentedLesionsSSCurve.png", height=300> (on our dataset - not on EPIC)
+	</li>
+	<li> Epidermal Lesion SS Curve <br>
+		<img src="2015-10-20/epidermalLesionsSSCurve.png", height=300> (on our dataset - not on EPIC)
+	 </li>
+
+</ul>
+
+<!-- ------------------------------------------------------- October 13 ------------------------------------------>
+<hr  style="height:3px;border:none;color:#333;background-color:#333;" />
+<h2><u> October 13, 2015 </u></h2>
+
+<h3> MICCAI Conference - Munich, Germany </h3>
+<ol>
+  <li> Noel Codella - IBM Watson only working on dermoscopy, but interested in melanoma - have <strong> ~2000 images </strong><br>
+  	<img src="2015-10-13/ibm.jpg" height="100">
+  	<img src="2015-10-13/dermoscopy1.jpg" height="100">
+  	<img src="2015-10-13/dermoscopy2.jpg" height="100">
+  	<img src="2015-10-13/dermoscopy3.jpg" height="100">
+  	<img src="2015-10-13/dermoscopy4.jpg" height="100">
+  	<img src="2015-10-13/dermoscopy5.jpg" height="100">
+  </li>
+  <li> IBM Watson will release ~10k image dermoscopy challenge in 2016-2017</li>
+  <li> IBM Watson is not a threat - their 30M images are mostly of radiology <br>
+  	<a href="http://venturebeat.com/2014/12/17/skin-cancer-meets-its-worst-nightmare-ibm/" target="_blank">
+  		Venture Beat Article - Skin Cancer</a> <br>
+  	<a href="http://www.technologyreview.com/news/540141/why-ibm-just-bought-billions-of-medical-images-for-watson-to-look-at/" target="_blank">
+  		MIT Tech Review - Acquisition of MergeHealthcare </a>
+	</li>
+  <li> We seem to have the largest dataset of any derm researcher. </li>
+</ol>
+
+<h3> Next Steps: </h3>
+<ol>
+  <li> Data Gathering: Google Image Search, ISDIC (IBM), ISIC, EPIC, Other atlases, Andy Conrad!</li>
+  <li> Algorithms: Different metrics - i.e. pigmented lesion classification</li>
+
+</ol>
+
+
+<!-- ------------------------------------------------------- September 22 ------------------------------------------>
+<hr  style="height:3px;border:none;color:#333;background-color:#333;" />
+<h2><u> September 22, 2015 </u></h2>
+
+<h3> Company Name: Sentry AI </h3>
+Basic Idea: We are the first line of vigilance against general health conditions. We leverage data
+collected at home (phones, smart watches, etc.) to monitor your health and inform your healthcare.
+<br>
+Step 1: Skin Cancer Detection
+<br>
+
+<h3> Experiments: </h3>
+
+<table style="width:1000">
+  <tr>
+    <td>LeafNodes: 30% Accuracy Top1</td>
+    <td> LeafNodes + BufferFill: 33% Accuracy Top1</td>
+    <td> LeafNodes + BufferFill + Tree-based Learning: 36% Accuracy Top1</td>
+  </tr>
+  <tr>
+    <td>
+			<img src="2015-9-22/leafnodes.png" width="300">
+    </td>
+    <td>
+			<img src="2015-9-22/leafnodes_bufferfill.png" width="300">
+    </td>
+    <td>
+			<img src="2015-9-22/leafnodes_bufferfill_taxmerge.png" width="300">
+    </td>
+  </tr>
+</table>
+
+<h3> Raw Data Distribution </h3>
+<img src="2015-9-22/datadistribution.png" width="300"><br>
+
+<ol>
+  <li>5442 benign-dermal-tumors-cysts-sinuses</li>
+  <li>922 cutaneous-lymphoma-and-lymphoid-infiltrates</li>
+  <li>3515 epidermal-tumors-hamartomas-milia-and-growths-benign</li>
+  <li>4889 epidermal-tumors-pre-malignant-and-malignant</li>
+  <li>3111 genodermatoses-and-supernumerary-growths</li>
+  <li>38316 inflammatory</li>
+  <li>669 malignant-dermal-tumor</li>
+  <li>2570 pigmented-lesions-benign</li>
+  <li>1130 pigmented-lesions-malignant</li>
+</ol>
+
+<!-- ------------------------------------------------------- June9------------------------------------------>
+<hr  style="height:3px;border:none;color:#333;background-color:#333;" />
+<h2><u> June 9, 2015 </u></h2>
+
+<h3> Paper Writing </h3>
+<ul>
+	<li> Made 'Jarvis': DeepNet Algorithm with binary classification integrated into it
+	</li>
+	<li> Continued paper writing - nearly have a working manuscript! </li>
+</ul>
+
+
+<!-- -------------------------------------------------------June 2 ----------------------------------------- -->
+<hr  style="height:3px;border:none;color:#333;background-color:#333;" />
+<h2><u> June 2, 2015 </u></h2>
+
+<h3> Tracking System </h3>
+<ul>
+	<li> Met Marc Lavoy - Use 1-2 cameras, either mobile (13MP Samsung Galaxy S3) or
+	 <a href = "http://www.ptgrey.com/grasshopper3-120-mp-mono-usb3-vision-sony-icx834"> point-grey grasshoper3</a>
+	  </li>.
+</ul>
+
+<h3> Paper Writing </h3>
+<ul>
+	<li> Journal: Helen votes Science </li>
+	<li> <a href="https://docs.google.com/document/d/1FaU_CohGcfdnUF5CEDBFYhGJ21LT4vn6z8XQf0OfRG0/edit?usp=sharing"> Google Doc</a>: Writing has led to more analysis
+	<ul>
+		<li> Accuracy per class, saliency maps  <br>
+			<img src="2015-6-2/accuracyPerClass.png" width="500">
+			<img src="2015-6-2/saliency.png" width="500">
+		</li>
+		<li> Melanoma vs Nevi: Sensitivity vs Specificity & Precision vs Recall <br>
+			<img src="2015-6-2/sensitivity-specificity.png" width="500">
+			<img src="2015-6-2/precision-recall.png" width="500">
+		</li>
+		<li> Dimensionality Reduction <br>
+			<img src="2015-6-2/pca.png" width="500">
+			<img src="2015-6-2/tsne.png" width="500">
+		</li>
+	</ul>
+	</li>
+	<li> Testing Set: Dermatologists vs Jarvis <br><br>
+		<table style="width:400px">
+		  <tr>
+		  	<td colspan=3>------------------------------------------------------------------------</td>
+		  </tr>
+		  <tr>
+		    <td> </td>
+		    <td><strong>Top1 Acc</strong></td>
+		    <td><strong>Top2 Acc</strong></td>
+		  </tr>
+		  <tr>
+		    <td>Justin Ko</td>
+		    <td>53.3%</td>
+		    <td>68.8%</td>
+		  </tr>
+		  <tr>
+		    <td>Rob Novoa</td>
+		    <td>55.0%</td>
+		    <td>73.8%</td>
+		  </tr>
+		  <tr>
+		    <td><strong>Jarvis</strong></td>
+		    <td>72.1%</td>
+		    <td>85.4%</td>
+		  </tr>
+		  <tr>
+		  	<td colspan=3>------------------------------------------------------------------------</td>
+		  </tr>
+		</table>
+	</li>
+
+	<li> EPIC Validation Set - 100 Melanoma images - 16% Accuracy  - <br>
+		should we Turk our dataset to clean it? <br>
+		Should we require a protocol for taking images for diagnosing? <br>
+		<strong> Examples From EPIC </strong> <br>
+		<img src="2015-6-2/2-melanomas-on-back.png" width="100">
+		<img src="2015-6-2/melanoma-2-far-away.png" width="100">
+		<img src="2015-6-2/MI-L-upper-chest.jpg" width="100">
+		<img src="2015-6-2/MIS-mid-upper-back-2.jpg" width="100">
+		<img src="2015-6-2/MIS-R-cheek.jpg" width="100">
+		<img src="2015-6-2/mm-3.5mm-6.30.2014-2.jpg" width="100">
+		<img src="2015-6-2/MM-0.35-mm-R-leg.png" width="100">
+		<img src="2015-6-2/MM-0.35-mm-R-leg-near.png" width="100">
+		<img src="2015-6-2/MM-L-shoulder-0.47mm.png" width="100">
+		<img src="2015-6-2/MM-R-arm-1.1-mm.png" width="100">
+		<br> <br>
+		<strong> Examples From Our Dataset </strong> <br>
+		<img src="2015-6-2/getImage(8).jpg" width="100">
+		<img src="2015-6-2/getImage(10).jpg" width="100">
+		<img src="2015-6-2/getImage(16).jpg" width="100">
+		<img src="2015-6-2/getImage(18).jpg" width="100">
+		<img src="2015-6-2/getImage(23).jpg" width="100">
+		<img src="2015-6-2/getImage(28).jpg" width="100">
+		<img src="2015-6-2/getImage(37).jpg" width="100">
+	</li>
+
+</ul>
+
+
+
+
+<!-- -------------------------------------------------------May 26 ----------------------------------------- -->
+<hr  style="height:3px;border:none;color:#333;background-color:#333;" />
+<h2><u> May 26, 2015 </u></h2>
+
+<h3> System Registration </h3>
+<ul>
+	<li> Dense patch matching using L2-norm (equivalent to mean-subtracted convolutions)</li>
+	<li> Camera Array: Set up meeting with Marc Lavoy </li>
+</ul>
+
+<h3> Diagnostics </h3>
+<ul>
+	<li> Dermatologists vs Algorithms - we beat Gary Kasparov!!!! <br><br>
+		<table style="width:400px">
+		  <tr>
+		    <td> </td>
+		    <td><strong>Top1 Acc</strong></td>
+		    <td><strong>Top2 Acc</strong></td>
+		  </tr>
+		  <tr>
+		    <td>Justin Ko</td>
+		    <td>53.3%</td>
+		    <td>68.8%</td>
+		  </tr>
+		  <tr>
+		    <td>Rob Novoa</td>
+		    <td>55.0%</td>
+		    <td>73.8%</td>
+		  </tr>
+		  <tr>
+		    <td>AlexNet Baseline</td>
+		    <td>64.4%</td>
+		    <td>81.3%</td>
+		  </tr>
+		</table>
+	</li>
+
+
+</ul>
+
+<!-- -------------------------------------------------------May 19 ----------------------------------------- -->
+<hr  style="height:3px;border:none;color:#333;background-color:#333;" />
+<h2><u> May 19, 2015 </u></h2>
+
+<!-- <video width="320" height="240" controls>
+  <source src="/media/esteva/ExtraDrive1/ThrunResearch/MATLAB/Registration_SpringMass/SystemAlignmentData/movie.mp4" type="video/mp4">
+Your browser does not support the video tag.
+</video> -->
+
+<h3> System Registration </h3>
+<ul>
+	<li> End to End, Fully-Automated <a href="2015-5-19/html-SystemAlignment/SystemAlignment.html" target="_blank">System Alignment</a> over 2 	weeks of images: Dense Sift + Spring-Mass Registration.
+		<a href="2015-5-19/html-SystemAlignment/data1_movie.avi">Movie. </a>
+
+	</li>
+	<li> End to End, Fully-Automated <a href="2015-5-19/html-SystemAlignment-2/SystemAlignment.html" target="_blank">System Alignment</a> over 2 	weeks of images: Dense Sift (clipped) + Spring-Mass Registration.
+		<a href="2015-5-19/html-SystemAlignment-2/data2_movie.avi">Movie. </a>
+		<a href="2015-5-19/html-SystemAlignment-2/movie.mp4"> Movie-mp4. </a>
+		<br>
+		<img src="2015-5-19/html-SystemAlignment-2/SystemAlignment_08.png" width="1200">
+		<br>
+		Green box is the target patch <br>
+		Red boxes outline the matched patches<br>
+		White boxes are a point-of-reference, the exact coordinates of the target patch <br>
+		<img src="2015-5-19/html-SystemAlignment-2/SystemAlignment_10.png" width="150">
+		<img src="2015-5-19/html-SystemAlignment-2/SystemAlignment_11.png" width="150">
+		<img src="2015-5-19/html-SystemAlignment-2/SystemAlignment_13.png" width="150">
+		<img src="2015-5-19/html-SystemAlignment-2/SystemAlignment_15.png" width="150">
+		<img src="2015-5-19/html-SystemAlignment-2/SystemAlignment_17.png" width="150">
+		<img src="2015-5-19/html-SystemAlignment-2/SystemAlignment_19.png" width="150">
+		<img src="2015-5-19/html-SystemAlignment-2/SystemAlignment_21.png" width="150">
+		<img src="2015-5-19/html-SystemAlignment-2/SystemAlignment_23.png" width="150">
+		<img src="2015-5-19/html-SystemAlignment-2/SystemAlignment_25.png" width="150">
+		<img src="2015-5-19/html-SystemAlignment-2/SystemAlignment_27.png" width="150">
+		<br>
+		<br>
+	</li>
+	<li> Additional Correspondences: Human pose estimation: issue is that we need upper body detections<br>
+		<img src="2015-5-19/DSC_small_7.jpg" width="150">
+	</li>
+
+</ul>
+
+<h3> Diagnostics </h3>
+<ul>
+	<li> Rob: 55% Top1, 74% Top2 Accuracy</li>
+	<li> Updated formulation to problem statement: What are the points on a person's body that are most rapidly changing <strong> semantically </strong> or <strong> becoming dangerous</strong>?
+	</li>
+</ul>
+
+<hr  style="height:3px;border:none;color:#333;background-color:#333;" />
+
+<!-- -------------------------------------------------------May 12 ----------------------------------------- -->
+<h2><u> May 12, 2015 </u></h2>
+
+<h3> System Registration </h3>
+<ul>
+	<li> Challenge: Dermatologists want a metric on how a mark changes in time 	</li>
+	<li> Registration vs Detection + Segmentation? MAP Skin Detector? <br>
+		<img src="https://web.stanford.edu/class/ee368/Handouts/Lectures/Examples/6-Image-Segmentation/MAP_Skin_Detector/Face_Training_5.jpg" width="150">
+		<img src="https://web.stanford.edu/class/ee368/Handouts/Lectures/Examples/6-Image-Segmentation/MAP_Skin_Detector/Face_ref_5.png" width="150">
+	</li>
+	<li> <strike> Facemorphing </strike> </li>
+	<li> Old Idea: <a href="2015-5-12/html-SIFT/Registration.html" target="_blank"> SIFT for mole mapping </a>
+		<br>
+		<img src="2015-5-12/html-SIFT/Registration_04.png" width="300">
+	</li>
+	<li> Requested <a href="http://www.pelicanimaging.com/" target="_blank"> Pelican Imaging </a> Camera Array SDK
+		<br>
+		8 MP images stitched together such that everything is in focus
+
+	</li>
+
+</ul>
+
+<h3> Diagnostics </h3>
+<ul>
+	<li> Rob changed the taxonomy, and it dropped our baseline accuracy to 43% </li>
+	<li> Currently testing Rob and Justin (Gary Kasparov) on new taxonomy </li>
+	<li> Net Experiments:
+		<ol>
+			<li> 43% Top1 Acc : Baseline </li>
+			<li> 48% Top1 Acc : Random Subclass Generation (m=1000) </li>
+			<li> 50% Top1 Acc : Random Subclass Generation (m=411 - size of smallest clinical class) </li>
+			<li> 62.61% Top1 Acc : Taxonomy Learning - Clinical Subclass Merging (Depth-1)</li>
+			<li> 59.7% Top1 Acc : Taxonomy Learning - Clinical Subclass Recursive Merging & Division (Depth-full) </li>
+		</ol>
+	<li> <strong> GPU Cluster? </strong> </li>
+</ul>
+
+<hr  style="height:3px;border:none;color:#333;background-color:#333;" />
+
+<!-- -------------------------------------------------------May 5 ----------------------------------------- -->
+<h2><u> May 5, 2015 </u></h2>
+
+<h3> System Registration </h3>
+<ol>
+	<li>
+		 <a href="2015-5-5/html-ManualPoint_LandMarks/ManualPoint_Landmarks.html" target = "_blank">
+		L2 Norm Scanning on user-selected point + Landmark positioning using head
+		<br>
+		<img src="2015-5-5/html-ManualPoint_LandMarks/ManualPoint_Landmarks_07.png" width="300">
+		<img src="2015-5-5/html-ManualPoint_LandMarks/ManualPoint_Landmarks_08.png" width="300">
+		<img src="2015-5-5/html-ManualPoint_LandMarks/ManualPoint_Landmarks_09.png" width="300">
+		<img src="2015-5-5/html-ManualPoint_LandMarks/ManualPoint_Landmarks_10.png" width="300">
+		<img src="2015-5-5/html-ManualPoint_LandMarks/ManualPoint_Landmarks_11.png" width="300">
+		<img src="2015-5-5/html-ManualPoint_LandMarks/ManualPoint_Landmarks_12.png" width="300">
+		 </a>
+	</li>
+
+	<li>
+		<a href="2015-5-5/html-HeadDetection_VGG2010/HeadDetection_VGG2010.html" target = "_blank" > Head Detection </a> using <a href="http://www.robots.ox.ac.uk/~vgg/software/headmview/" >VGG-2010 Part-based detection code</a>
+		<br>
+		<img src="2015-5-5/html-HeadDetection_VGG2010/HeadDetection_VGG2010_01.png" width="300">
+		<img src="2015-5-5/html-HeadDetection_VGG2010/HeadDetection_VGG2010_02.png" width="300">
+		<img src="2015-5-5/html-HeadDetection_VGG2010/HeadDetection_VGG2010_03.png" width="300">
+		<img src="2015-5-5/html-HeadDetection_VGG2010/HeadDetection_VGG2010_04.png" width="300">
+		<img src="2015-5-5/html-HeadDetection_VGG2010/HeadDetection_VGG2010_05.png" width="300">
+		<img src="2015-5-5/html-HeadDetection_VGG2010/HeadDetection_VGG2010_06.png" width="300">
+	</li>
+</ol>
+
+<h3> Diagnostics </h3>
+<ol>
+	<li> <strong> Meeting with Tony Oro & Helen Blau </strong> <br>
+		beat a few <strong> top </strong> clinical dermatologists - Justin Ko, and his equivalents at Harvard/Yale/East Coast <br>
+		Integrate diagnosis into a teledermatology app
+	</li>
+	<li>
+		<strong> Meeting with Rob Novoa & Justin Ko </strong> <br>
+		they will do IRB proposal and help get EPIC data		<br>
+		Paper 1: Clinical Diagnosis from Images (NEJM) <br>
+		Paper 2: Gauging change in skin marks over time - i.e. registration (NEJM) <br>
+		Paper 3: Matching Saliency Maps to clinical features in dermoscopy (Journal of Clinical Dermatology)
+	</li>
+
+</ol>
+
+<hr  style="height:3px;border:none;color:#333;background-color:#333;" />
+
+
+<!-- -------------------------------------------------------APRIL 21 ----------------------------------------- -->
+<h2><u> April 28, 2015 </u></h2>
+
+<h3> System Registration </h3>
+<ol>
+	<li> <a href="2015-4-28/html-ManualPoint/ManualPoint.html" target="_blank">  L2 Norm Scanning on user-selected point: Two Images  </li>
+	 <img src="2015-4-28/html-ManualPoint/ManualPoint_05.png" width="300">	 </a>
+	 <br>
+	 <a href="2015-4-28/html-ManualPoint-TimeLapsed/ManualPoint_TimeLapse.html" target="_blank">  L2 Norm Scanning on user-selected point: Across Images
+	 	<br>
+	 <img src="2015-4-28/html-ManualPoint-TimeLapsed/ManualPoint_TimeLapse_14.png" width="300">
+	 <img src="2015-4-28/html-ManualPoint-TimeLapsed/ManualPoint_TimeLapse_15.png" width="300">
+	 <img src="2015-4-28/html-ManualPoint-TimeLapsed/ManualPoint_TimeLapse_16.png" width="300">
+	 <img src="2015-4-28/html-ManualPoint-TimeLapsed/ManualPoint_TimeLapse_17.png" width="300">
+	 <img src="2015-4-28/html-ManualPoint-TimeLapsed/ManualPoint_TimeLapse_18.png" width="300">
+	 <img src="2015-4-28/html-ManualPoint-TimeLapsed/ManualPoint_TimeLapse_19.png" width="300">
+
+	</a>
+	<li> Convex Approach </li>
+</ol>
+
+<h3> Diagnostics </h3>
+<ol>
+	<li> Scraped Dermoscopy/Histology Data - small
+</ol>
+
+
+
+
+<hr  style="height:3px;border:none;color:#333;background-color:#333;" />
+
+<!-- -------------------------------------------------------APRIL 21 ----------------------------------------- -->
+<h2><u> April 21, 2015 </u></h2>
+
+TNT:
+
+<h3> System Registration </h3>
+<ol>
+	<li> <a href="2015-4-21/April21.html" target="_blank"> Spring-Mass Model
+	 with Dense SIFT </li>
+	 <img src="2015-4-21/April21_01.png" width="300">
+	 <img src="2015-4-21/April21_02.png" width="300"></a>
+</ol>
+
+<h3> <strike> ICCV</strike> Nature Submission </h3>
+Exciting meeting with <a href="http://web.stanford.edu/group/blau/", target="_blank"> Helen Blau</a> <br>
+Will meet with <a href="https://med.stanford.edu/profiles/anthony-oro", target="_blank"> Tony Oro </a> <br>
+<br>
+Must beat doctors at...
+<ol>
+	<li> Normal Images (Nets = 65% Top1 of 9-way classification) <br> <img src="2015-4-21/Melanoma.jpg" width="100"> <br><br></li>
+	<li> Dermoscopy - scraping data <br> <img src="2015-4-21/dermoscopy.jpg" width="100"> <br><br></li>
+	<li> Histology - scraping data <br> <img src="2015-4-21/histology.jpg" width="100"> <br><br></li>
+</ol>
+
+<hr  style="height:3px;border:none;color:#333;background-color:#333;" />
+
+<!-- -------------------------------------------------------APRIL 14 ------------------------------------------ -->
+<h2><u> April 14, 2015 </u></h2>
+The Next Thing (TNT): Dense SIFT, ICCV Submission
+
+<h3> System Registration </h3>
+
+<ol>
+	<li> <a href="2015-4-14/DrawingBoard.html" target="_blank"> Spring-Mass Model </a>
+	 with SIFT, Harris, & Manual features </li>
+	 <img src="2015-4-14/DrawingBoard_01.png" width="300">
+	 <img src="2015-4-14/DrawingBoard_13.png" width="300">
+</ol>
+
+<h3> ICCV - Dataset Paper </h3>
+
+<ul>
+	<li>
+		<strong> Experiments </strong>
+		<ol>
+			<li> Skin-10 Expanded  </li>
+			<li> Skin-10 Expanded + Imagenet (Cuticle, skin-graft)</li>
+			<li> Skin-10 Expanded + Imagenet (Cuticle, skin-graft) + Texture Categories (Ants/Rocks) </li>
+		</ol>
+	</li>
+
+	<li>
+		<strong> Ideas to Increase Accuracy </strong>
+		<ol>
+			<li> Generating Artificial Classes </li>
+			<li> Updating penalty matrix during training </li>
+		</ol>
+	</li>
+</ul>
+
+<h3> Nature Paper? </h3>
+
+<strong> Beat dermatologists at... </strong>
+<ol>
+	<li> Normal Images (done)  </li>
+	<li> Dermoscopy Images </li>
+	<li> Histology Slides </li>
+</ol>
+
+<h3> <a href = "http://www.cimit.org/grants-cimitprize.html"> CIMIT </a> Competition </h3>
+
+
+<hr  style="height:3px;border:none;color:#333;background-color:#333;" />
+
+
+
+
+<!-- -------------------------------------------------------APRIL 7 --------------------------------------------------------- -->
+<h2><u> April 7, 2015 </u></h2>
+
+<h3> Registration Results </h3>
+<p>
+	Nonrigid ICP does a reasonable job at registration. However, the images exhibit too much movement in Z (i.e. intensity changes). The next iteration should either penalize intensity shifts or not allow them at all (i.e. a pure 2D spring-mass model)
+</p>
+<ol>
+	<li> <a href="2015-4-7/RegistrationAnalysis_nonrigidICP-1/RegistrationAnalysis.html" target="_blank">Non-rigidICP (Data_1) </a> </li>
+	<li> <a href="2015-4-7/RegistrationAnalysis_nonrigidICP-2/RegistrationAnalysis.html" target="_blank">Non-rigidICP (Data_2) </a> </li>
+	<li> <a href="2015-4-7/RegistrationAnalysis_nonrigidICP-3/RegistrationAnalysis.html" target="_blank">Non-rigidICP (Data_3) </a> </li>
+	<li> <a href="2015-4-7/RegistrationAnalysis_nonrigidICP-4-zscale=3/RegistrationAnalysis.html" target="_blank">Non-rigidICP (zscale = 3) </a> </li>
+	<li> <a href="2015-4-7/RegistrationAnalysis_nonrigidICP-5-zscale=10/RegistrationAnalysis.html" target="_blank">Non-rigidICP (zscale = 10) </a> </li>
+
+	<li> Up next: 2D spring & mass model? </li>
+</ol>
+
+<h3> ICCV Submission </h3>
+<p>
+	Would publishing a dataset paper on fine-grained classification further our system? <br>
+	CS 231n Paper: <a href = "http://cs231n.stanford.edu/reports/esteva-paper.pdf" target="_blank" >Deep Networks for Early Stage Skin Disease and Skin Cancer Classification</a>
+</p>
+
+<h3> Other System Architectures </h3>
+<ul>
+	<li> <a href="https://www.youtube.com/watch?v=quGhaggn3cQ" target="_blank"> Inverse Kinect Fusion </a> </li>
+</ul>
+
+
+<hr  style="height:3px;border:none;color:#333;background-color:#333;" />
+
+
+
+<!-- -------------------------------------------------------MARCH 31 2015 ---------------------------------------------------- -->
+
+<h2><u>March 31, 2015</u> </h2>
+
+Takehome message:<br>
+The system architecture has been revamped, and we are working on image registration as a preprocessing step to classification.
+
+<h3>
+	<a href="https://www.evernote.com/shard/s199/sh/566259df-f62b-46c4-b8b7-227ab35ea742/81ea37dbf6302fd0055c64e4b470e1be" target="_blank">System Architecture & Setup</a>
+</h3>
+<img src="https://www.evernote.com/shard/s199/sh/566259df-f62b-46c4-b8b7-227ab35ea742/81ea37dbf6302fd0055c64e4b470e1be/res/25a88c5e-c359-49c4-b6fd-26ec9317d6fa/IMG_3744.jpg?resizeSmall&width=832" width="100">
+<img src="https://www.evernote.com/shard/s199/sh/566259df-f62b-46c4-b8b7-227ab35ea742/81ea37dbf6302fd0055c64e4b470e1be/res/2f4e4a0f-3469-405d-b1b9-376448d261eb.png?resizeSmall&width=832" width="300">
+<img src="https://www.evernote.com/shard/s199/sh/566259df-f62b-46c4-b8b7-227ab35ea742/81ea37dbf6302fd0055c64e4b470e1be/res/eecfb9e9-2266-4df7-ae44-8f764390cccb.png?resizeSmall&width=832" width="300">
+
+
+
+<h3>Registration Techniques</h3>
+
+<ul>
+	<li><a href="2015-3-31/Registration_SIFT/sift.html" target="_blank">Sift</a></li>
+	<li> <a href="2015-3-31/Reg_Affine_time_lapse/reg_affine_time_lapse.html" target="_blank">    Affine </a></li>
+	<li><a href="2015-3-31/Registration_nonrigidICP/nr_ICP.html" target="_blank">Non-rigid ICP</a></li>
+	<ul>
+		<li><a href="BackgroundSubtraction/bgsub.html" target="_blank">Background Subtraction</a></li>
+	</ul>
+</ul>
+
+
+
+<h3>Mobile App Demo </h3>
+</body>
+</html>
