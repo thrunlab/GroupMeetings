@@ -12,6 +12,42 @@
 
 <h1 align = "middle">Skin Project - Group Meeting Updates</h1>
 
+<!-- --------------------------------------------------------------------------------------------- -  -->
+<hr  style="height:3px;border:none;color:#333;background-color:#333;" />
+<h2><u> January 19, 2016 </u></h2>
+
+<h2> General Diagnostics with taxonomy-learning </h2>
+<ul>
+  <li>Num Images per class = 1000, Normal Inference: 50.8% Max, 49.5% Average<br>
+    <img src="2016-1-19/9way.png" height=300>
+    <img src="2016-1-19/synset.png" height=200>
+  </li>
+
+  <li>Num Images per class = 1000, 4x Weighted Inference: 45.1% Max<br>
+    <img src="2016-1-19/9way_4xWeightedInference.png" height=300>
+  </li>
+  <li>Pigmented SS curve goes down slightly due to the decrease in accuracy per class<br>
+    <img src="2016-1-19/pigmentedSS.png" height=300>
+  </li>
+</ul>
+
+<h2> Error Bars: Bayes Rule? </h2>
+<ul>
+  <li> Per Derm: p-value=5% <br>
+    <img src="2016-1-19/p-value=5_perDerm.png" height=300>
+  </li>
+  <li> Average Derm: p-value= 10% <br>
+    <img src="2016-1-19/p-value=10_averageDerms.png" height=300>
+  </li>
+</ul>
+
+<h2> Retrieval: </h2>
+<ul>
+  <li>Reveals that ~4.2% of our dermquest validation set contains multiple-viewpoint images. Source of issue: databases
+    will steal each other's images.
+  </li>
+</ul>
+
 
 <!-- --------------------------------------------------------------------------------------------- -  -->
 <hr  style="height:3px;border:none;color:#333;background-color:#333;" />
