@@ -15,6 +15,108 @@
 
 <!-- --------------------------------------------------------------------------------------------- -  -->
 <hr  style="height:3px;border:none;color:#333;background-color:#333;" />
+<h2><u> February 23, 2016 </u></h2>
+
+<h2>TreeLearning and Baseline Experiments</h2>
+<ul>
+	<li>(General Accuracy, Pigmented AUC, Epidermal AUC)</li>
+	<li>TreeLearning: Recursive Dividing N=1000: 52.2%, 0.91, 0.96 <br>
+		<a href="2016-2-23/recursive_dividing/general.png" target="_blank">
+			<img src="2016-2-23/recursive_dividing/general.png" height="100"></a>
+		<a href="2016-2-23/recursive_dividing/pigmentedSS.png" target="_blank">
+			<img src="2016-2-23/recursive_dividing/pigmentedSS.png" height="100"></a>
+		<a href="2016-2-23/recursive_dividing/carcinomaSS.png" target="_blank">
+			<img src="2016-2-23/recursive_dividing/carcinomaSS.png" height="100"></a>
+		<a href="2016-2-23/recursive_dividing/pigmentedSS1vsAll.png" target="_blank">
+			<img src="2016-2-23/recursive_dividing/pigmentedSS1vsAll.png" height="100"></a>
+		<a href="2016-2-23/recursive_dividing/carcinomaSS1vsAll.png" target="_blank">
+			<img src="2016-2-23/recursive_dividing/carcinomaSS1vsAll.png" height="100"></a>
+		<a href="2016-2-23/recursive_dividing/pigmentedSS100.png" target="_blank">
+			<img src="2016-2-23/recursive_dividing/pigmentedSS100.png" height="100"></a>
+		<a href="2016-2-23/recursive_dividing/cm.png" target="_blank">
+			<img src="2016-2-23/recursive_dividing/cm.png" height="100"></a>
+    <br><br>
+	</li>
+
+  <li>TreeLearning: Merging Depth 1 N=250: 50.4%, 0.91, 0.95<br>
+		<a href="2016-2-23/merging_depth1/general.png" target="_blank">
+			<img src="2016-2-23/merging_depth1/general.png" height="100"></a>
+		<a href="2016-2-23/merging_depth1/pigmentedSS.png" target="_blank">
+			<img src="2016-2-23/merging_depth1/pigmentedSS.png" height="100"></a>
+		<a href="2016-2-23/merging_depth1/carcinomaSS.png" target="_blank">
+			<img src="2016-2-23/merging_depth1/carcinomaSS.png" height="100"></a>
+		<a href="2016-2-23/merging_depth1/pigmentedSS1vsAll.png" target="_blank">
+			<img src="2016-2-23/merging_depth1/pigmentedSS1vsAll.png" height="100"></a>
+		<a href="2016-2-23/merging_depth1/carcinomaSS1vsAll.png" target="_blank">
+			<img src="2016-2-23/merging_depth1/carcinomaSS1vsAll.png" height="100"></a>
+		<a href="2016-2-23/merging_depth1/pigmentedSS100.png" target="_blank">
+			<img src="2016-2-23/merging_depth1/pigmentedSS100.png" height="100"></a>
+		<a href="2016-2-23/merging_depth1/cm.png" target="_blank">
+			<img src="2016-2-23/merging_depth1/cm.png" height="100"></a>
+    <br><br>
+  </li>
+
+  <li>Baseline: 47.6%, 0.89, 0.94<br>
+		<a href="2016-2-23/baseline/general.png" target="_blank">
+			<img src="2016-2-23/baseline/general.png" height="100"></a>
+		<a href="2016-2-23/baseline/pigmentedSS.png" target="_blank">
+			<img src="2016-2-23/baseline/pigmentedSS.png" height="100"></a>
+		<a href="2016-2-23/baseline/carcinomaSS.png" target="_blank">
+			<img src="2016-2-23/baseline/carcinomaSS.png" height="100"></a>
+		<a href="2016-2-23/baseline/pigmentedSS1vsAll.png" target="_blank">
+			<img src="2016-2-23/baseline/pigmentedSS1vsAll.png" height="100"></a>
+		<a href="2016-2-23/baseline/carcinomaSS1vsAll.png" target="_blank">
+			<img src="2016-2-23/baseline/carcinomaSS1vsAll.png" height="100"></a>
+		<a href="2016-2-23/baseline/pigmentedSS100.png" target="_blank">
+			<img src="2016-2-23/baseline/pigmentedSS100.png" height="100"></a>
+		<a href="2016-2-23/baseline/cm.png" target="_blank">
+			<img src="2016-2-23/baseline/cm.png" height="100"></a>
+    <br><br>
+  </li>
+</ul>
+
+<h2>Dataset size vs Accuracy</h2>
+<ul>
+	<li>
+		<a href="2016-2-23/data_limit_PL.png" target="_blank">
+			<img src="2016-2-23/data_limit_PL.png" height="300"></a>
+		<a href="2016-2-23/data_limit_EL.png" target="_blank">
+			<img src="2016-2-23/data_limit_EL.png" height="300"></a>
+		<a href="2016-2-23/data_limit_general.png" target="_blank">
+			<img src="2016-2-23/data_limit_general.png" height="300"></a>
+
+	</li>
+	<li>Used 1%, 10%, 50%, and 100% of the data</li>
+</ul>
+
+<h2>TSNE</h2>
+<ul>
+	<li>
+		<a href="2016-2-23/tsne.png" target="_blank"><img src="2016-2-23/tsne.png" height="300"></a>
+		<a href="2016-2-23/tsne_thumbnails.png" target="_blank"><img src="2016-2-23/tsne_thumbnails.png" height="300"></a>
+	</li>
+	<li></li>
+</ul>
+
+<h2></h2>
+<ul>
+</ul>
+
+<h2>Turked Test Set</h2>
+<ul>
+	<li>Params: Maximum cost = 2</li>
+	<li>Training/Validation Images: 120998</li>
+	<li>Testing Images: 2263</li>
+</ul>
+
+<h2>New derm tests</h2>
+<ul>
+	<li>Epidermal Lesions 200 Images</li>
+	<li>Pigmented Lesions 200 Images (based on derm feedback from first test of 100 images)</li>
+</ul>
+
+<!-- --------------------------------------------------------------------------------------------- -  -->
+<hr  style="height:3px;border:none;color:#333;background-color:#333;" />
 <h2><u> February 08, 2016 </u></h2>
 
 <h2>Finalizing experiments for <a href="https://docs.google.com/document/d/14cbwlkdhq7D4dOSx64SkHuhz9gs8oCOI6uykNsWHf0o/edit" target="_blank">paper</a></h2>
