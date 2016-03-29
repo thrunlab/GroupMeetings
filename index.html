@@ -22,6 +22,109 @@
 
 <!-- ######################################################################################## -->
 <hr  style="height:3px;border:none;color:#333;background-color:#333;" />
+<h2><u> March 28, 2016 </u></h2>
+
+<h2> New Test Set: Connected Components (CC)</h2>
+<ul>
+	<li>Using Image Metadata, Turk1, Turk2, Dermquest IDs</li>
+	<li>17671 Test, 109421 Train</li>
+	<li>[TODO: insert plots]</li>	
+</ul>
+
+<h2>Duplicate Analysis: IMD vs CC</h2>
+<ul>
+	<li>Manual verification of duplicate rate on pigmented lesions using 10-NN retrieval</li>
+	<li>IMD: 
+		<a href="" target="_blank">TODO: Run these sorted</a>
+		<br>
+		<table border="1", style="width:300">
+		  <tr> <strong>
+		    <td>Class</td>
+		    <td># Duplicates</td>
+		    <td># Images</td>
+		    <td>% Duplicates</td>
+		  </tr> </strong>
+		  <tr>
+		    <td>Pigmented Malignant</td>
+		    <td>17</td>
+		    <td>314</td>
+		    <td>5.4%</td>
+		  </tr>
+		  <tr>
+		    <td>Pigmented Benign  </td>
+		    <td>8</td>
+		    <td>700</td>
+		    <td>1.1%</td>
+		  </tr>
+		  <tr>
+		    <td>Pigmented</td>
+		    <td>30</td>
+		    <td>957</td>
+		    <td><strong>2.4%</strong></td>
+		  </tr>
+		</table>
+	</li>
+	<li>CC: <br>
+		Malignant
+		<a href="2016-3-28/cc/8/batch_0" target="_blank">First Batch</a>,
+		<a href="2016-3-28/cc/8/batch_5" target="_blank">Last Batch</a>,
+		<br>
+		Benign 
+		<a href="2016-3-28/cc/7/batch_0" target="_blank">First Batch</a>,
+		<a href="2016-3-28/cc/7/batch_12" target="_blank">Last Batch</a>,
+		<br>
+		<table border="1", style="width:300">
+		  <tr> <strong>
+		    <td>Class</td>
+		    <td># Duplicates</td>
+		    <td># Images</td>
+		    <td>% Duplicates</td>
+		  </tr> </strong>
+		  <tr>
+		    <td>Pigmented Malignant</td>
+		    <td>15</td>
+		    <td>301</td>
+		    <td>5.4%</td>
+		  </tr>
+		  <tr>
+		    <td>Pigmented Benign  </td>
+		    <td>15</td>
+		    <td>656</td>
+		    <td>2.2%</td>
+		  </tr>
+		  <tr>
+		    <td>Pigmented</td>
+		    <td>30</td>
+		    <td>957</td>
+		    <td><strong>3.1%</strong></td>
+		  </tr>
+		</table>
+	</li>
+</ul>
+
+<h2> ISBI Challenge</h2>
+<ul>
+	<li>Our best results to date.</li>
+	<li>Train = 0.8, Val = 0.2</li>
+	<li> Average over the plateaud validation set: <br>
+		<ul>
+			<li>AUC: 0.96</li>
+			<li>Sensitivity: 0.97</li>
+			<li>Specificity: 0.85</li>
+			<li>Average Precision Score: 0.70</li>
+		</ul>
+	</li>
+</ul>
+<!-- 
+<ul>
+	<li></li>
+	<li></li>
+	<li></li>
+</ul> -->
+
+
+<!-- ######################################################################################## -->
+<hr  style="height:3px;border:none;color:#333;background-color:#333;" />
 <h2><u> March 22, 2016 </u></h2>
 
 <h2>New Test Set: IMD-T (ImageMetaData Turked)</h2>
