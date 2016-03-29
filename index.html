@@ -12,7 +12,7 @@
 
 <h1 align = "middle">Skin Project - Group Meeting Updates</h1>
 
-<!-- 
+<!--
 <h2></h2>
 <ul>
 	<li></li>
@@ -28,13 +28,23 @@
 <ul>
 	<li>Using Image Metadata, Turk1, Turk2, Dermquest IDs</li>
 	<li>17671 Test, 109421 Train</li>
-	<li>[TODO: insert plots]</li>	
+	<li>Results: 52.7% General Acc., Pigmented SS=0.915, Epidermal SS=0.891 <br>
+		<img src="2016-3-28/9way.png" width="300">
+		<img src="2016-3-28/ss_pig.png" width="200">
+		<img src="2016-3-28/ss_epi.png" width="200">
+
+	</li>
 </ul>
 
-<h2>Duplicate Analysis: IMD vs CC</h2>
+<h2>Duplicate Analysis: IMD and CC</h2>
 <ul>
+	<li><strong>Many duplicates are mislabled</strong> <br>
+		Some inflate accuracies, others deflate them <br>
+		10% of duplicate clusters had multiple labels in them <br>
+		Of those that did, the majority label only accounted for 62.29% on average <br>
+	</li>
 	<li>Manual verification of duplicate rate on pigmented lesions using 10-NN retrieval</li>
-	<li>IMD: 
+	<li>IMD:
 		<a href="" target="_blank">TODO: Run these sorted</a>
 		<br>
 		<table border="1", style="width:300">
@@ -69,7 +79,7 @@
 		<a href="2016-3-28/cc/8/batch_0" target="_blank">First Batch</a>,
 		<a href="2016-3-28/cc/8/batch_5" target="_blank">Last Batch</a>,
 		<br>
-		Benign 
+		Benign
 		<a href="2016-3-28/cc/7/batch_0" target="_blank">First Batch</a>,
 		<a href="2016-3-28/cc/7/batch_12" target="_blank">Last Batch</a>,
 		<br>
@@ -109,13 +119,16 @@
 	<li> Average over the plateaud validation set: <br>
 		<ul>
 			<li>AUC: 0.96</li>
-			<li>Sensitivity: 0.97</li>
-			<li>Specificity: 0.85</li>
-			<li>Average Precision Score: 0.70</li>
+			<li>Sensitivity: 0.98</li>
+			<li>Specificity: 0.86</li>
+			<li>Average Precision Score: 0.73</li>
 		</ul>
 	</li>
+	<li>
+		<img src="2016-3-28/isbi_ss.png" width="200">
+	</li>
 </ul>
-<!-- 
+<!--
 <ul>
 	<li></li>
 	<li></li>
@@ -173,7 +186,7 @@
 
 <h2>Questions:</h2>
 <ul>
-	<li>Must the dermtest be a subset of our final test set?</li>	
+	<li>Must the dermtest be a subset of our final test set?</li>
 </ul>
 
 <!-- ######################################################################################## -->
