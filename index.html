@@ -24,6 +24,23 @@
 <hr  style="height:3px;border:none;color:#333;background-color:#333;" />
 <h2><u> March 28, 2016 </u></h2>
 
+<h2>ISBI Challenge!</h2>
+<ul>
+	<li><strong>Rob: "this is super-human performance"</strong></li>
+	<li>Train = 0.8, Val = 0.2</li>
+	<li> Average over the plateaud validation set: <br>
+		<ul>
+			<li>AUC: 0.96</li>
+			<li>Sensitivity: 0.98</li>
+			<li>Specificity: 0.86</li>
+			<li>Average Precision Score: 0.73</li>
+		</ul>
+	</li>
+	<li>
+		<img src="2016-3-28/isbi_ss.png" width="200">
+	</li>
+</ul>
+
 <h2> New Test Set: Connected Components (CC)</h2>
 <ul>
 	<li>Using Image Metadata, Turk1, Turk2, Dermquest IDs</li>
@@ -118,30 +135,22 @@
 	</li>
 </ul>
 
-<h2> ISBI Challenge</h2>
-<ul>
-	<li>Our best results to date.</li>
-	<li>Train = 0.8, Val = 0.2</li>
-	<li> Average over the plateaud validation set: <br>
-		<ul>
-			<li>AUC: 0.96</li>
-			<li>Sensitivity: 0.98</li>
-			<li>Specificity: 0.86</li>
-			<li>Average Precision Score: 0.73</li>
-		</ul>
-	</li>
-	<li>
-		<img src="2016-3-28/isbi_ss.png" width="200">
-	</li>
-</ul>
-
 <h2>Questions</h2>
 <ul>
-  <li>Use EPIC for a small test set?
+  <li>Use a strictly path-labeled test set for the derm test?</li>
+  <li>Option: EPIC <br>
     <ul>
       <li>Pros: path labeled. Comes from Stanford Hospital</li>
       <li>Cons: Hard to get data. Few images are useful for ML. Small dataset (~100s). </li>
     </ul>
+  </li>
+  <li>Option: Dermquest <br>
+  	<ul>
+  		<li>Pros: Data abundant. Already collected</li>
+  		<li>Cons: A few images aren't path labeled</li>
+  	</ul>
+  	<img src="2016-3-28/ss_pig_dermquest.png" width="200">
+  	<img src="2016-3-28/ss_epi_dermquest.png" width="200">
   </li>
 </ul>
 
